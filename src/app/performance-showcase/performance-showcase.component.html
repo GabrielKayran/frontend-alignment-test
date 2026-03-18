@@ -1,0 +1,560 @@
+<div class="showcase-layout">
+
+  <!-- =====================================================================
+       SIDEBAR NAVIGATION
+  ====================================================================== -->
+  <nav class="sidebar" aria-label="Section navigation">
+    <div class="sidebar__header">
+      <span class="sidebar__badge">Angular 21</span>
+      <h2 class="sidebar__title">Performance<br>Patterns</h2>
+      <p class="sidebar__desc">Anti-patterns &amp; best practices for modern Angular apps.</p>
+    </div>
+
+    <ul class="sidebar__nav" role="list">
+      @for (section of sections; track section.id) {
+        <li>
+          <button
+            class="nav-item"
+            [class.nav-item--active]="activeSection() === section.id"
+            (click)="scrollToSection(section.id)"
+            [attr.aria-current]="activeSection() === section.id ? 'true' : null"
+          >
+            <span class="nav-item__index">{{ section.index | number: '2.0-0' }}</span>
+            <span class="nav-item__text">
+              <span class="nav-item__title">{{ section.title }}</span>
+              <span class="nav-item__sub">{{ section.subtitle }}</span>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <div class="sidebar__footer">
+      <span class="sidebar__tech">Zone.js &bull; Signals &bull; RxJS 7</span>
+    </div>
+  </nav>
+
+  <!-- =====================================================================
+       MAIN CONTENT
+  ====================================================================== -->
+  <main class="content" role="main">
+
+    <!-- ===================================================================
+         SECTION 1 — Getter vs Signal (Computed)
+    ==================================================================== -->
+    <section id="getter-vs-signal" class="section">
+      <div class="section__header">
+        <span class="section__number">01</span>
+        <div>
+          <h2 class="section__title">Getter vs Signal <span class="tag-pill tag-pill--cyan">Computed</span></h2>
+          <p class="section__desc">
+            A class getter is re-evaluated on <strong>every change detection cycle</strong>
+            regardless of whether its dependencies changed. A <code>computed()</code> signal memoizes
+            the result and only recalculates when a tracked signal dependency changes.
+          </p>
+        </div>
+      </div>
+
+      <!-- Code panels -->
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.getterAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.getterBest"></pre>
+        </div>
+      </div>
+
+      <!-- Interactive demo -->
+      <div class="demo-box">
+        <div class="demo-box__header">
+          <span class="demo-label">Live demo</span>
+          <div class="demo-actions">
+            <button class="btn btn--outline" (click)="toggleFilterTag()">
+              Toggle "filter" tag
+            </button>
+            <button class="btn btn--primary" (click)="triggerChangeDetection()">
+              Trigger change detection
+            </button>
+            <button class="btn btn--ghost" (click)="clearConsole()">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="demo-stats">
+          <div class="stat-card">
+            <span class="stat-card__label">CD triggers</span>
+            <span class="stat-card__value stat-card__value--neutral">{{ cdTriggerCount() }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__label">Getter call count</span>
+            <span class="stat-card__value stat-card__value--anti">{{ getterCallCount() }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__label">Computed re-evaluations</span>
+            <span class="stat-card__value stat-card__value--best">{{ computedRevalCount() }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__label">Getter result</span>
+            <span class="stat-card__value stat-card__value--neutral">{{ hasFilterTagGetter }}</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card__label">Computed result</span>
+            <span class="stat-card__value stat-card__value--neutral">{{ hasFilterTagComputed() }}</span>
+          </div>
+        </div>
+
+        <div class="fake-console">
+          <div class="fake-console__bar">
+            <span class="fake-console__dot"></span>
+            <span class="fake-console__dot"></span>
+            <span class="fake-console__dot"></span>
+            <span class="fake-console__title">Console output</span>
+          </div>
+          <div class="fake-console__body">
+            @if (consoleEntries().length === 0) {
+              <p class="fake-console__empty">Click "Trigger change detection" to see the difference...</p>
+            }
+            @for (entry of consoleEntries(); track $index) {
+              <div class="log-line" [class.log-line--anti]="entry.type === 'anti'"
+                   [class.log-line--best]="entry.type === 'best'">
+                <span class="log-line__prefix">{{ entry.type === 'anti' ? '&#9679;' : '&#9675;' }}</span>
+                {{ entry.message }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <p class="demo-tip">
+          Each CD trigger increments the getter call count. The computed re-evaluation count only
+          increases when you "Toggle filter tag" — regardless of how many CD cycles occurred.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 2 — Lazy Loading
+    ==================================================================== -->
+    <section id="lazy-loading" class="section">
+      <div class="section__header">
+        <span class="section__number">02</span>
+        <div>
+          <h2 class="section__title">Lazy Loading <span class="tag-pill tag-pill--cyan">Bundle size</span></h2>
+          <p class="section__desc">
+            <code>loadChildren</code> with NgModules requires shipping an entire module graph per route.
+            <code>loadComponent</code> with standalone components produces a minimal, targeted chunk
+            containing only that component and its direct imports — nothing more.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern — NgModule</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.lazyAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Best practice — Standalone</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.lazyBest"></pre>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-box__icon">&#128196;</div>
+        <div>
+          <strong>Why it matters</strong>
+          <p>
+            An NgModule chunk includes every component declared in that module,
+            whether the route uses them or not. Standalone lazy-loading lets the bundler
+            apply tree-shaking at the component level — the chunk only contains what's
+            directly imported by <code>DashboardComponent</code>.
+            Typical savings: <span class="highlight">20 – 60 KB</span> per route for mid-size modules.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 3 — Writable vs Readonly Signal
+    ==================================================================== -->
+    <section id="signal-readonly" class="section">
+      <div class="section__header">
+        <span class="section__number">03</span>
+        <div>
+          <h2 class="section__title">Signal Encapsulation <span class="tag-pill tag-pill--amber">Encapsulation</span></h2>
+          <p class="section__desc">
+            Exposing a <code>WritableSignal</code> publicly breaks encapsulation — any consumer
+            can mutate state the service is supposed to own. Use <code>.asReadonly()</code> to expose
+            a view-only projection while keeping mutation methods private to the service.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.signalAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.signalBest"></pre>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-box__icon">&#128274;</div>
+        <div>
+          <strong>Rule of thumb</strong>
+          <p>
+            Private <code>_signal = signal()</code> inside the service &rarr;
+            public <code>signal = this._signal.asReadonly()</code> for consumers.
+            This is the same principle as a private setter with a public getter in traditional OOP,
+            but enforced at the type level by Angular's signal API.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 4 — Service Scope
+    ==================================================================== -->
+    <section id="service-scope" class="section">
+      <div class="section__header">
+        <span class="section__number">04</span>
+        <div>
+          <h2 class="section__title">Service Scope <span class="tag-pill tag-pill--amber">DI</span></h2>
+          <p class="section__desc">
+            <code>providedIn: 'root'</code> creates a singleton that lives for the entire app lifetime.
+            For ephemeral state — like a multi-step wizard — use component-level providers so the
+            service is created fresh when the component mounts and garbage-collected when it destroys.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern — global singleton</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.scopeAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Best practice — component-scoped</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.scopeBest"></pre>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-box__icon">&#9881;</div>
+        <div>
+          <strong>Lifecycle alignment</strong>
+          <p>
+            Component-scoped providers are tied to the component's destroy lifecycle.
+            This means no manual reset logic, no stale state between wizard sessions,
+            and automatic memory reclamation — Angular handles it for you.
+            All child components of the wizard also receive the same scoped instance.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 5 — debounceTime + distinctUntilChanged
+    ==================================================================== -->
+    <section id="debounce" class="section">
+      <div class="section__header">
+        <span class="section__number">05</span>
+        <div>
+          <h2 class="section__title">Input Debounce <span class="tag-pill tag-pill--cyan">RxJS</span></h2>
+          <p class="section__desc">
+            Without <code>debounceTime</code>, every keystroke fires a network request.
+            With <code>debounceTime(300) + distinctUntilChanged()</code>, requests only fire
+            after the user pauses — and only when the value actually changed.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.debounceAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.debounceBest"></pre>
+        </div>
+      </div>
+
+      <!-- Interactive demo -->
+      <div class="demo-box">
+        <div class="demo-box__header">
+          <span class="demo-label">Live demo — type something</span>
+          <button class="btn btn--ghost" (click)="resetDebounceDemo()">Reset</button>
+        </div>
+
+        <input
+          class="demo-input"
+          type="text"
+          placeholder="Search users..."
+          [value]="searchQuery()"
+          (input)="onSearchInput($any($event.target).value)"
+          autocomplete="off"
+        />
+
+        <div class="demo-stats">
+          <div class="stat-card stat-card--wide">
+            <span class="stat-card__label">&#10007; Without debounce — API calls fired</span>
+            <span class="stat-card__value stat-card__value--anti">{{ immediateCallCount() }}</span>
+          </div>
+          <div class="stat-card stat-card--wide">
+            <span class="stat-card__label">&#10003; With debounce — API calls fired</span>
+            <span class="stat-card__value stat-card__value--best">{{ debouncedCallCount() }}</span>
+          </div>
+        </div>
+
+        <div class="search-log">
+          @for (entry of searchLog(); track $index) {
+            <div class="log-line"
+                 [class.log-line--anti]="entry.kind === 'immediate'"
+                 [class.log-line--best]="entry.kind === 'debounced'">
+              <span class="log-line__kind">{{ entry.kind === 'immediate' ? 'IMMEDIATE' : 'DEBOUNCED' }}</span>
+              <span>"{{ entry.query }}"</span>
+            </div>
+          }
+          @if (searchLog().length === 0) {
+            <p class="fake-console__empty">Start typing to see requests logged here...</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 6 — Template-driven vs Reactive Forms
+    ==================================================================== -->
+    <section id="forms" class="section">
+      <div class="section__header">
+        <span class="section__number">06</span>
+        <div>
+          <h2 class="section__title">Forms Strategy <span class="tag-pill tag-pill--amber">Forms</span></h2>
+          <p class="section__desc">
+            Use <strong>Reactive Forms</strong> for complex, dynamic, or programmatically validated forms —
+            validation lives in TypeScript, is easily tested, and composes well.
+            Use <strong>Template-driven</strong> (<code>ngModel</code>) only for simple, isolated inputs
+            where no cross-field validation or dynamic control generation is needed.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Template-driven for complex forms</span>
+            <span class="panel__lang">HTML</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.formsAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Reactive form</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.formsBest"></pre>
+        </div>
+      </div>
+
+      <!-- Interactive reactive form demo -->
+      <div class="demo-box">
+        <div class="demo-box__header">
+          <span class="demo-label">Live reactive form</span>
+        </div>
+
+        @if (reactiveFormSubmitted()) {
+          <div class="form-success">
+            Form submitted successfully — validation passed.
+          </div>
+        } @else {
+          <form [formGroup]="reactiveForm" (ngSubmit)="submitReactiveForm()" class="reactive-form" novalidate>
+            <div class="form-field">
+              <label class="form-label" for="rf-email">Email</label>
+              <input id="rf-email" class="form-input"
+                     type="email" formControlName="email" placeholder="you@example.com" />
+              @if (reactiveForm.get('email')?.invalid && reactiveForm.get('email')?.touched) {
+                <span class="form-error">
+                  @if (reactiveForm.get('email')?.errors?.['required']) { Email is required. }
+                  @else { Enter a valid email address. }
+                </span>
+              }
+            </div>
+
+            <div class="form-field">
+              <label class="form-label" for="rf-username">Username</label>
+              <input id="rf-username" class="form-input"
+                     type="text" formControlName="username" placeholder="min. 3 characters" />
+              @if (reactiveForm.get('username')?.invalid && reactiveForm.get('username')?.touched) {
+                <span class="form-error">
+                  @if (reactiveForm.get('username')?.errors?.['required']) { Username is required. }
+                  @else { Username must be at least 3 characters. }
+                </span>
+              }
+            </div>
+
+            <button type="submit" class="btn btn--primary">Submit</button>
+          </form>
+        }
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 7 — Unsubscribing from Observables
+    ==================================================================== -->
+    <section id="unsubscribe" class="section">
+      <div class="section__header">
+        <span class="section__number">07</span>
+        <div>
+          <h2 class="section__title">Observable Cleanup <span class="tag-pill tag-pill--cyan">RxJS</span></h2>
+          <p class="section__desc">
+            Subscriptions that outlive their component cause memory leaks and ghost event handlers.
+            Angular 16+ ships <code>takeUntilDestroyed()</code> as the canonical solution —
+            no boilerplate Subject, no <code>ngOnDestroy</code> required.
+          </p>
+        </div>
+      </div>
+
+      <!-- Three-column layout for this section -->
+      <div class="panel-grid panel-grid--three">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; Manual unsubscribe</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.unsubAnti"></pre>
+          <p class="panel__note">Verbose. Easy to forget when there are multiple subscriptions.</p>
+        </div>
+
+        <div class="panel panel--neutral">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--neutral">~ takeUntil pattern</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.unsubMiddle"></pre>
+          <p class="panel__note">Better — but still requires a Subject and a full ngOnDestroy lifecycle hook.</p>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; takeUntilDestroyed</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.unsubBest"></pre>
+          <p class="panel__note">Zero boilerplate. Works in constructors and inject() context. Angular 16+.</p>
+        </div>
+      </div>
+
+      <div class="insight-box">
+        <div class="insight-box__icon">&#9889;</div>
+        <div>
+          <strong>Key advantage of <code>takeUntilDestroyed</code></strong>
+          <p>
+            When called inside the constructor (or any function in the inject context),
+            it automatically binds to the current component's <code>DestroyRef</code>
+            without needing to pass it explicitly.
+            You can also pass a <code>destroyRef</code> explicitly when calling from outside the inject context —
+            e.g., a standalone service method.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 8 — SharedModule Anti-pattern
+    ==================================================================== -->
+    <section id="shared-module" class="section">
+      <div class="section__header">
+        <span class="section__number">08</span>
+        <div>
+          <h2 class="section__title">SharedModule Anti-pattern <span class="tag-pill tag-pill--amber">Architecture</span></h2>
+          <p class="section__desc">
+            The <code>SharedModule</code> pattern was a pragmatic solution in the NgModule world —
+            declare once, export everywhere. With standalone components it becomes a liability:
+            it forces every consumer to load components they never use, bloats chunk sizes,
+            and creates invisible coupling through implicit re-exports.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel-grid">
+        <div class="panel panel--anti">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--anti">&#10007; SharedModule</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.sharedAnti"></pre>
+        </div>
+
+        <div class="panel panel--best">
+          <div class="panel__header">
+            <span class="panel__badge panel__badge--best">&#10003; Direct standalone imports</span>
+            <span class="panel__lang">TypeScript</span>
+          </div>
+          <pre class="code-block" [innerHTML]="code.sharedBest"></pre>
+        </div>
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-item insight-item--anti">
+          <h4>SharedModule problems</h4>
+          <ul>
+            <li>All declared components included in every consumer's bundle</li>
+            <li>Implicit dependency — hard to know what a module actually needs</li>
+            <li>Single point of coupling — touching SharedModule risks regressions everywhere</li>
+            <li>Prevents effective tree-shaking by the bundler</li>
+          </ul>
+        </div>
+        <div class="insight-item insight-item--best">
+          <h4>Standalone benefits</h4>
+          <ul>
+            <li>Each component declares exactly what it needs — nothing more</li>
+            <li>Bundler can tree-shake at the component level</li>
+            <li>Dependencies are explicit and colocated with the component</li>
+            <li>Smaller chunks, faster lazy loading, easier refactoring</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>

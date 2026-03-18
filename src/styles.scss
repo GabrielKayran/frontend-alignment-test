@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+// =============================================================================
+// Global reset and base styles
+// =============================================================================
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #07070f;
+  color: #e2e8f0;
+  font-family: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Prevent the default white flash on navigation
+app-root {
+  display: block;
+  min-height: 100vh;
+  background: #07070f;
+}
+
+// =============================================================================
+// Syntax highlight token classes (used inside [innerHTML] code blocks)
+// These must be global because Angular strips component encapsulation
+// from dynamically injected HTML.
+// =============================================================================
+.kw   { color: #7dd3fc; font-weight: 600; }
+.fn   { color: #86efac; }
+.str  { color: #fde68a; }
+.type { color: #c4b5fd; }
+.cm   { color: #475569; font-style: italic; }
+.num  { color: #f9a8d4; }
+.tag  { color: #7dd3fc; }
+.attr { color: #86efac; }
