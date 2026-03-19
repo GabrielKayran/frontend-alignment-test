@@ -187,6 +187,11 @@
   line-height: 1;
 }
 
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
+
 // Main content
 .content {
   display: flex;
