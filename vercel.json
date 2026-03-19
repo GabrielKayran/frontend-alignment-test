@@ -1,8 +1,8 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/frontend-alignment-test",
+  "outputDirectory": "dist/frontend-alignment-test/browser",
   "framework": "angular",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/server/server.mjs" }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
