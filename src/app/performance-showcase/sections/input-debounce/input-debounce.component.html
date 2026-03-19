@@ -1,0 +1,72 @@
+<section id="debounce" class="section">
+  <div class="section__header">
+    <span class="section__number">05</span>
+    <div>
+      <h2 class="section__title">Input Debounce <span class="tag-pill tag-pill--cyan">RxJS</span></h2>
+      <p class="section__desc">
+        Without <code>debounceTime</code>, every keystroke fires a network request.
+        With <code>debounceTime(300) + distinctUntilChanged()</code>, requests only fire
+        after the user pauses — and only when the value actually changed.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">Live demo — type something</span>
+      <button class="btn btn--ghost" (click)="resetDemo()">Reset</button>
+    </div>
+
+    <input
+      class="demo-input"
+      type="text"
+      placeholder="Search users..."
+      [value]="searchQuery()"
+      (input)="onSearchInput($any($event.target).value)"
+      autocomplete="off"
+    />
+
+    <div class="demo-stats">
+      <div class="stat-card stat-card--wide">
+        <span class="stat-card__label">&#10007; Without debounce — API calls fired</span>
+        <span class="stat-card__value stat-card__value--anti">{{ immediateCallCount() }}</span>
+      </div>
+      <div class="stat-card stat-card--wide">
+        <span class="stat-card__label">&#10003; With debounce — API calls fired</span>
+        <span class="stat-card__value stat-card__value--best">{{ debouncedCallCount() }}</span>
+      </div>
+    </div>
+
+    <div class="search-log">
+      @for (entry of searchLog(); track $index) {
+        <div class="log-line"
+             [class.log-line--anti]="entry.kind === 'immediate'"
+             [class.log-line--best]="entry.kind === 'debounced'">
+          <span class="log-line__kind">{{ entry.kind === 'immediate' ? 'IMMEDIATE' : 'DEBOUNCED' }}</span>
+          <span>"{{ entry.query }}"</span>
+        </div>
+      }
+      @if (searchLog().length === 0) {
+        <p class="fake-console__empty">Start typing to see requests logged here...</p>
+      }
+    </div>
+  </div>
+</section>

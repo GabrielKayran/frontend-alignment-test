@@ -1,0 +1,53 @@
+<section id="shared-module" class="section">
+  <div class="section__header">
+    <span class="section__number">08</span>
+    <div>
+      <h2 class="section__title">SharedModule Anti-pattern <span class="tag-pill tag-pill--amber">Architecture</span></h2>
+      <p class="section__desc">
+        The <code>SharedModule</code> pattern was a pragmatic solution in the NgModule world —
+        declare once, export everywhere. With standalone components it becomes a liability:
+        it forces every consumer to load components they never use, bloats chunk sizes,
+        and creates invisible coupling through implicit re-exports.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; SharedModule</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; Direct standalone imports</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-item insight-item--anti">
+      <h4>SharedModule problems</h4>
+      <ul>
+        <li>All declared components included in every consumer's bundle</li>
+        <li>Implicit dependency — hard to know what a module actually needs</li>
+        <li>Single point of coupling — touching SharedModule risks regressions everywhere</li>
+        <li>Prevents effective tree-shaking by the bundler</li>
+      </ul>
+    </div>
+    <div class="insight-item insight-item--best">
+      <h4>Standalone benefits</h4>
+      <ul>
+        <li>Each component declares exactly what it needs — nothing more</li>
+        <li>Bundler can tree-shake at the component level</li>
+        <li>Dependencies are explicit and colocated with the component</li>
+        <li>Smaller chunks, faster lazy loading, easier refactoring</li>
+      </ul>
+    </div>
+  </div>
+</section>

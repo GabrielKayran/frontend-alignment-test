@@ -1,0 +1,44 @@
+<section id="service-scope" class="section">
+  <div class="section__header">
+    <span class="section__number">04</span>
+    <div>
+      <h2 class="section__title">Service Scope <span class="tag-pill tag-pill--amber">DI</span></h2>
+      <p class="section__desc">
+        <code>providedIn: 'root'</code> creates a singleton that lives for the entire app lifetime.
+        For ephemeral state — like a multi-step wizard — use component-level providers so the
+        service is created fresh when the component mounts and garbage-collected when it destroys.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern — global singleton</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; Best practice — component-scoped</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-box__icon">&#9881;</div>
+    <div>
+      <strong>Lifecycle alignment</strong>
+      <p>
+        Component-scoped providers are tied to the component's destroy lifecycle.
+        This means no manual reset logic, no stale state between wizard sessions,
+        and automatic memory reclamation — Angular handles it for you.
+        All child components of the wizard also receive the same scoped instance.
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,72 @@
+<section id="forms" class="section">
+  <div class="section__header">
+    <span class="section__number">06</span>
+    <div>
+      <h2 class="section__title">Forms Strategy <span class="tag-pill tag-pill--amber">Forms</span></h2>
+      <p class="section__desc">
+        Use <strong>Reactive Forms</strong> for complex, dynamic, or programmatically validated forms —
+        validation lives in TypeScript, is easily tested, and composes well.
+        Use <strong>Template-driven</strong> (<code>ngModel</code>) only for simple, isolated inputs
+        where no cross-field validation or dynamic control generation is needed.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; Template-driven for complex forms</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; Reactive form</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">Live reactive form</span>
+    </div>
+
+    @if (submitted()) {
+      <div class="form-success">
+        Form submitted successfully — validation passed.
+      </div>
+    } @else {
+      <form [formGroup]="reactiveForm" (ngSubmit)="submit()" class="reactive-form" novalidate>
+        <div class="form-field">
+          <label class="form-label" for="rf-email">Email</label>
+          <input id="rf-email" class="form-input"
+                 type="email" formControlName="email" placeholder="you@example.com" />
+          @if (reactiveForm.get('email')?.invalid && reactiveForm.get('email')?.touched) {
+            <span class="form-error">
+              @if (reactiveForm.get('email')?.errors?.['required']) { Email is required. }
+              @else { Enter a valid email address. }
+            </span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="rf-username">Username</label>
+          <input id="rf-username" class="form-input"
+                 type="text" formControlName="username" placeholder="min. 3 characters" />
+          @if (reactiveForm.get('username')?.invalid && reactiveForm.get('username')?.touched) {
+            <span class="form-error">
+              @if (reactiveForm.get('username')?.errors?.['required']) { Username is required. }
+              @else { Username must be at least 3 characters. }
+            </span>
+          }
+        </div>
+
+        <button type="submit" class="btn btn--primary">Submit</button>
+      </form>
+    }
+  </div>
+</section>

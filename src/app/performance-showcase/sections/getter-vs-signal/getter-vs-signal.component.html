@@ -1,0 +1,102 @@
+<section id="getter-vs-signal" class="section">
+  <div class="section__header">
+    <span class="section__number">01</span>
+    <div>
+      <h2 class="section__title">
+        Getter vs Signal <span class="tag-pill tag-pill--cyan">Computed</span>
+      </h2>
+      <p class="section__desc">
+        A class getter is re-evaluated on <strong>every change detection cycle</strong> regardless
+        of whether its dependencies changed. A <code>computed()</code> signal memoizes the result
+        and only recalculates when a tracked signal dependency changes.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">Live demo</span>
+      <div class="demo-actions">
+        <button class="btn btn--outline" (click)="toggleFilterTag()">Toggle "filter" tag</button>
+        <button class="btn btn--primary" (click)="triggerChangeDetection()">
+          Trigger change detection
+        </button>
+        <button class="btn btn--ghost" (click)="clearConsole()">Clear</button>
+      </div>
+    </div>
+
+    <div class="demo-stats">
+      <div class="stat-card">
+        <span class="stat-card__label">CD triggers</span>
+        <span class="stat-card__value stat-card__value--neutral">{{ cdTriggerCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">Getter call count</span>
+        <span class="stat-card__value stat-card__value--anti">{{ getterCallCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">Computed re-evaluations</span>
+        <span class="stat-card__value stat-card__value--best">{{ computedRevalCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">Getter result</span>
+        <span class="stat-card__value stat-card__value--neutral">{{ hasFilterTagGetter }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">Computed result</span>
+        <span class="stat-card__value stat-card__value--neutral">{{ hasFilterTagComputed() }}</span>
+      </div>
+    </div>
+
+    <div class="fake-console">
+      <div class="fake-console__bar">
+        <span class="fake-console__dot"></span>
+        <span class="fake-console__dot"></span>
+        <span class="fake-console__dot"></span>
+        <span class="fake-console__title">Console output</span>
+      </div>
+      <div class="fake-console__body">
+        @if (consoleEntries().length === 0) {
+          <p class="fake-console__empty">
+            Click "Trigger change detection" to see the difference...
+          </p>
+        }
+        @for (entry of consoleEntries(); track $index) {
+          <div
+            class="log-line"
+            [class.log-line--anti]="entry.type === 'anti'"
+            [class.log-line--best]="entry.type === 'best'"
+          >
+            <span class="log-line__prefix">{{
+              entry.type === 'anti' ? '&#9679;' : '&#9675;'
+            }}</span>
+            {{ entry.message }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <p class="demo-tip">
+      Each CD trigger increments the getter call count. The computed re-evaluation count only
+      increases when you "Toggle filter tag" — regardless of how many CD cycles occurred.
+    </p>
+  </div>
+</section>
