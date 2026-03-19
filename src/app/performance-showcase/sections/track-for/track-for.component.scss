@@ -1,0 +1,134 @@
+:host {
+  display: contents;
+}
+
+.track-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+
+.track-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.track-side__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.track-side__label {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.track-side__label--anti {
+  color: var(--anti);
+  background: var(--anti-dim);
+  border: 1px solid var(--anti-border);
+}
+
+.track-side__label--best {
+  color: var(--best);
+  background: var(--best-dim);
+  border: 1px solid var(--best-border);
+}
+
+.track-side__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.track-ops {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.track-ops--anti {
+  background: var(--anti-dim);
+  border-color: var(--anti-border);
+}
+
+.track-ops--best {
+  background: var(--best-dim);
+  border-color: var(--best-border);
+}
+
+.track-ops__label {
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.track-ops__value {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+
+  .track-ops--anti & { color: var(--anti); }
+  .track-ops--best & { color: var(--best); }
+}
+
+.track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &.track-item--hot {
+    border-color: rgba(248, 113, 113, 0.3);
+    background: rgba(248, 113, 113, 0.06);
+  }
+}
+
+.track-item__name {
+  color: var(--text-1);
+  font-size: 12.5px;
+}
+
+.track-item__renders {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.track-item__renders--anti {
+  color: var(--anti);
+  background: var(--anti-dim);
+}
+
+.track-item__renders--best {
+  color: var(--best);
+  background: var(--best-dim);
+}

@@ -13,9 +13,12 @@ import { LazyLoadingComponent }       from './sections/lazy-loading/lazy-loading
 import { SignalReadonlyComponent }    from './sections/signal-readonly/signal-readonly.component';
 import { ServiceScopeComponent }      from './sections/service-scope/service-scope.component';
 import { InputDebounceComponent }     from './sections/input-debounce/input-debounce.component';
-import { FormsStrategyComponent }     from './sections/forms-strategy/forms-strategy.component';
+import { TrackForComponent }          from './sections/track-for/track-for.component';
 import { ObservableCleanupComponent } from './sections/observable-cleanup/observable-cleanup.component';
 import { SharedModulePatternComponent } from './sections/shared-module-pattern/shared-module-pattern.component';
+import { DeferBlocksComponent }       from './sections/defer-blocks/defer-blocks.component';
+import { OnPushComponent }            from './sections/on-push/on-push.component';
+import { FormsStrategyComponent }     from './sections/forms-strategy/forms-strategy.component';
 
 interface Section {
   id: string;
@@ -36,9 +39,12 @@ interface Section {
     SignalReadonlyComponent,
     ServiceScopeComponent,
     InputDebounceComponent,
-    FormsStrategyComponent,
+    TrackForComponent,
     ObservableCleanupComponent,
     SharedModulePatternComponent,
+    DeferBlocksComponent,
+    OnPushComponent,
+    FormsStrategyComponent,
   ],
   templateUrl: './performance-showcase.component.html',
   styleUrl: './performance-showcase.component.scss',
@@ -48,14 +54,17 @@ export class PerformanceShowcaseComponent implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly sections: Section[] = [
-    { id: 'getter-vs-signal', index: 1, title: 'Getter vs Signal',      subtitle: 'Change detection cost' },
-    { id: 'lazy-loading',     index: 2, title: 'Lazy Loading',          subtitle: 'Bundle strategy' },
-    { id: 'signal-readonly',  index: 3, title: 'Signal Encapsulation',  subtitle: 'Writable vs Readonly' },
-    { id: 'service-scope',    index: 4, title: 'Service Scope',         subtitle: 'Root vs component-level' },
-    { id: 'debounce',         index: 5, title: 'Input Debounce',        subtitle: 'RxJS operators' },
-    { id: 'forms',            index: 6, title: 'Forms Strategy',        subtitle: 'Reactive vs Template' },
-    { id: 'unsubscribe',      index: 7, title: 'Observable Cleanup',    subtitle: 'Subscription management' },
-    { id: 'shared-module',    index: 8, title: 'SharedModule Pattern',  subtitle: 'Modern standalone approach' },
+    { id: 'getter-vs-signal', index: 1,  title: 'Getter vs Signal',      subtitle: 'Change detection cost' },
+    { id: 'lazy-loading',     index: 2,  title: 'Lazy Loading',          subtitle: 'Bundle strategy' },
+    { id: 'signal-readonly',  index: 3,  title: 'Signal Encapsulation',  subtitle: 'Writable vs Readonly' },
+    { id: 'service-scope',    index: 4,  title: 'Service Scope',         subtitle: 'Root vs component-level' },
+    { id: 'debounce',         index: 5,  title: 'Input Debounce',        subtitle: 'RxJS operators' },
+    { id: 'track-for',        index: 6,  title: 'track no @for',         subtitle: 'DOM reconciliation' },
+    { id: 'unsubscribe',      index: 7,  title: 'Observable Cleanup',    subtitle: 'Subscription management' },
+    { id: 'shared-module',    index: 8,  title: 'SharedModule Pattern',  subtitle: 'Modern standalone approach' },
+    { id: 'defer-blocks',     index: 9,  title: '@defer Blocks',         subtitle: 'Lazy loading no template' },
+    { id: 'on-push',          index: 10, title: 'OnPush Detection',      subtitle: 'Change detection strategy' },
+    { id: 'forms',            index: 11, title: 'Forms Strategy',        subtitle: 'Best practices (bonus)' },
   ];
 
   protected readonly activeSection = signal('getter-vs-signal');

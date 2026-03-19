@@ -1,0 +1,68 @@
+<section id="defer-blocks" class="section">
+  <div class="section__header">
+    <span class="section__number">09</span>
+    <div>
+      <h2 class="section__title">
+        &#64;defer Blocks <span class="tag-pill tag-pill--cyan">Angular 17+</span>
+      </h2>
+      <p class="section__desc">
+        Eagerly loaded components bloat the initial bundle even when the user never scrolls to them.
+        <code>&#64;defer</code> performs <strong>automatic code-splitting</strong> for the deferred component —
+        no bundler config, no <code>loadComponent</code>, just a template declaration.
+      </p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; Eager loading</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; &#64;defer with helper blocks</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="panel panel--neutral" style="margin-top: 16px">
+    <div class="panel__header">
+      <span class="panel__badge">All available triggers</span>
+      <span class="panel__lang">HTML</span>
+    </div>
+    <pre class="code-block" [innerHTML]="codeTriggers"></pre>
+  </div>
+
+  <div class="insight-box" style="margin-top: 16px">
+    <div class="insight-box__icon">&#128230;</div>
+    <div>
+      <strong>Automatic code-splitting</strong>
+      <p>
+        The Angular CLI detects components inside <code>&#64;defer</code> and automatically moves them
+        into separate chunks at build time. No extra configuration needed — the same mechanism used by
+        <code>loadComponent</code> in routes, but applicable to any part of the template.
+        The <code>&#64;placeholder</code> block renders immediately; the main content is downloaded
+        and rendered only when the trigger fires.
+      </p>
+    </div>
+  </div>
+
+  <div class="insight-box insight-box--warning" style="margin-top: 12px">
+    <div class="insight-box__icon">&#9888;</div>
+    <div>
+      <strong>When not to use &#64;defer</strong>
+      <p>
+        Components above the fold, critical for LCP (Largest Contentful Paint), or that require
+        immediate SSR hydration <strong>should not be deferred</strong>.
+        Reserve <code>&#64;defer</code> for secondary content: charts, rich-text editors,
+        data grids, inactive tabs, and anything below the initial visible screen.
+      </p>
+    </div>
+  </div>
+</section>
