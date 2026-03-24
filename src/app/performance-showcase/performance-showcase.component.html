@@ -1,9 +1,10 @@
 <div class="showcase-layout">
-  <nav class="sidebar" aria-label="Section navigation">
+  <nav class="sidebar" [attr.aria-label]="'layout.sidebar.navigationAriaLabel' | translate">
     <div class="sidebar__header">
       <span class="sidebar__badge">Angular 21</span>
-      <h2 class="sidebar__title">Performance<br />Patterns</h2>
-      <p class="sidebar__desc">Anti-patterns &amp; best practices for modern Angular apps.</p>
+      <h2 class="sidebar__title" [innerHTML]="'layout.sidebar.title' | translate"></h2>
+      <p class="sidebar__desc">{{ 'layout.sidebar.description' | translate }}</p>
+      <app-language-switcher />
     </div>
 
     <ul class="sidebar__nav" role="list">
@@ -17,8 +18,8 @@
           >
             <span class="nav-item__index">{{ section.index | number: '2.0-0' }}</span>
             <span class="nav-item__text">
-              <span class="nav-item__title">{{ section.title }}</span>
-              <span class="nav-item__sub">{{ section.subtitle }}</span>
+              <span class="nav-item__title">{{ section.titleKey | translate }}</span>
+              <span class="nav-item__sub">{{ section.subtitleKey | translate }}</span>
             </span>
           </button>
         </li>
@@ -26,12 +27,22 @@
     </ul>
 
     <div class="sidebar__footer">
-      <span class="sidebar__tech">Zone.js &bull; Signals &bull; RxJS 7</span>
-      <span class="sidebar__credit">developed by @GabrielKayran</span>
+      <span class="sidebar__tech">{{ 'layout.sidebar.techStack' | translate }}</span>
+      <span class="sidebar__credit">
+        {{ 'layout.sidebar.creditPrefix' | translate }}
+        <a class="sidebar__link" href="https://www.instagram.com/gabrielkayran/" target="_blank">
+          &#64;GabrielKayran
+        </a>
+      </span>
     </div>
   </nav>
 
   <main class="content" role="main">
+    <div class="mobile-toolbar">
+      <span class="sidebar__badge mobile-toolbar__badge">Angular 21</span>
+      <app-language-switcher />
+    </div>
+
     <app-section-getter-vs-signal />
     <app-section-lazy-loading />
     <app-section-signal-readonly />

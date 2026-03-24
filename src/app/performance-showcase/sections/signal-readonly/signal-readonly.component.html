@@ -2,19 +2,22 @@
   <div class="section__header">
     <span class="section__number">03</span>
     <div>
-      <h2 class="section__title">Signal Encapsulation <span class="tag-pill tag-pill--amber">Encapsulation</span></h2>
-      <p class="section__desc">
-        Exposing a <code>WritableSignal</code> publicly breaks encapsulation — any consumer
-        can mutate state the service is supposed to own. Use <code>.asReadonly()</code> to expose
-        a view-only projection while keeping mutation methods private to the service.
-      </p>
+      <h2 class="section__title">
+        {{ 'sections.signalReadonly.title' | translate }}
+        <span class="tag-pill tag-pill--amber">{{
+          'sections.signalReadonly.tag' | translate
+        }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.signalReadonly.description' | translate"></p>
     </div>
   </div>
 
   <div class="panel-grid">
     <div class="panel panel--anti">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+        <span class="panel__badge panel__badge--anti">
+          &#10007; {{ 'sections.signalReadonly.panels.anti' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeAnti"></pre>
@@ -22,7 +25,9 @@
 
     <div class="panel panel--best">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+        <span class="panel__badge panel__badge--best">
+          &#10003; {{ 'sections.signalReadonly.panels.best' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeBest"></pre>
@@ -32,13 +37,8 @@
   <div class="insight-box">
     <div class="insight-box__icon">&#128274;</div>
     <div>
-      <strong>Rule of thumb</strong>
-      <p>
-        Private <code>_signal = signal()</code> inside the service &rarr;
-        public <code>signal = this._signal.asReadonly()</code> for consumers.
-        This is the same principle as a private setter with a public getter in traditional OOP,
-        but enforced at the type level by Angular's signal API.
-      </p>
+      <strong>{{ 'sections.signalReadonly.insight.title' | translate }}</strong>
+      <p [innerHTML]="'sections.signalReadonly.insight.description' | translate"></p>
     </div>
   </div>
 </section>

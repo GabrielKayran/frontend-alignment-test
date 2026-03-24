@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-observable-cleanup',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './observable-cleanup.component.html',
   styleUrl: './observable-cleanup.component.scss',
 })
 export class ObservableCleanupComponent {
-
   readonly codeAnti = `<span class="cm">// Manual unsubscribe — easy to forget, verbose</span>
 <span class="kw">private</span> sub!: <span class="type">Subscription</span>;
 

@@ -1,0 +1,22 @@
+<div
+  class="language-switcher"
+  role="group"
+  [attr.aria-label]="'layout.language.ariaLabel' | translate"
+>
+  <span class="language-switcher__label">{{ 'layout.language.label' | translate }}</span>
+
+  <div class="language-switcher__actions">
+    @for (language of languages; track language.code) {
+      <button
+        type="button"
+        class="language-switcher__button"
+        [class.language-switcher__button--active]="currentLanguage() === language.code"
+        [attr.aria-pressed]="currentLanguage() === language.code"
+        [title]="language.labelKey | translate"
+        (click)="changeLanguage(language.code)"
+      >
+        {{ language.code }}
+      </button>
+    }
+  </div>
+</div>

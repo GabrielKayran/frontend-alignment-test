@@ -1,30 +1,25 @@
-import {
-  Component,
-  signal,
-  inject,
-  OnInit,
-  OnDestroy,
-  PLATFORM_ID,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { DecimalPipe, isPlatformBrowser } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { GetterVsSignalComponent }    from './sections/getter-vs-signal/getter-vs-signal.component';
-import { LazyLoadingComponent }       from './sections/lazy-loading/lazy-loading.component';
-import { SignalReadonlyComponent }    from './sections/signal-readonly/signal-readonly.component';
-import { ServiceScopeComponent }      from './sections/service-scope/service-scope.component';
-import { InputDebounceComponent }     from './sections/input-debounce/input-debounce.component';
-import { TrackForComponent }          from './sections/track-for/track-for.component';
+import { LanguageSwitcherComponent } from '../shared/language-switcher/language-switcher.component';
+import { GetterVsSignalComponent } from './sections/getter-vs-signal/getter-vs-signal.component';
+import { InputDebounceComponent } from './sections/input-debounce/input-debounce.component';
+import { LazyLoadingComponent } from './sections/lazy-loading/lazy-loading.component';
 import { ObservableCleanupComponent } from './sections/observable-cleanup/observable-cleanup.component';
+import { OnPushComponent } from './sections/on-push/on-push.component';
+import { ServiceScopeComponent } from './sections/service-scope/service-scope.component';
 import { SharedModulePatternComponent } from './sections/shared-module-pattern/shared-module-pattern.component';
-import { DeferBlocksComponent }       from './sections/defer-blocks/defer-blocks.component';
-import { OnPushComponent }            from './sections/on-push/on-push.component';
-import { FormsStrategyComponent }     from './sections/forms-strategy/forms-strategy.component';
+import { SignalReadonlyComponent } from './sections/signal-readonly/signal-readonly.component';
+import { TrackForComponent } from './sections/track-for/track-for.component';
+import { DeferBlocksComponent } from './sections/defer-blocks/defer-blocks.component';
+import { FormsStrategyComponent } from './sections/forms-strategy/forms-strategy.component';
 
 interface Section {
   id: string;
   index: number;
-  title: string;
-  subtitle: string;
+  titleKey: string;
+  subtitleKey: string;
 }
 
 @Component({
@@ -34,6 +29,8 @@ interface Section {
   // demonstrated in Section 8 (SharedModule anti-pattern).
   imports: [
     DecimalPipe,
+    TranslatePipe,
+    LanguageSwitcherComponent,
     GetterVsSignalComponent,
     LazyLoadingComponent,
     SignalReadonlyComponent,
@@ -50,21 +47,75 @@ interface Section {
   styleUrl: './performance-showcase.component.scss',
 })
 export class PerformanceShowcaseComponent implements OnInit, OnDestroy {
-
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly sections: Section[] = [
-    { id: 'getter-vs-signal', index: 1,  title: 'Getter vs Signal',      subtitle: 'Change detection cost' },
-    { id: 'lazy-loading',     index: 2,  title: 'Lazy Loading',          subtitle: 'Bundle strategy' },
-    { id: 'signal-readonly',  index: 3,  title: 'Signal Encapsulation',  subtitle: 'Writable vs Readonly' },
-    { id: 'service-scope',    index: 4,  title: 'Service Scope',         subtitle: 'Root vs component-level' },
-    { id: 'debounce',         index: 5,  title: 'Input Debounce',        subtitle: 'RxJS operators' },
-    { id: 'track-for',        index: 6,  title: 'track no @for',         subtitle: 'DOM reconciliation' },
-    { id: 'unsubscribe',      index: 7,  title: 'Observable Cleanup',    subtitle: 'Subscription management' },
-    { id: 'shared-module',    index: 8,  title: 'SharedModule Pattern',  subtitle: 'Modern standalone approach' },
-    { id: 'defer-blocks',     index: 9,  title: '@defer Blocks',         subtitle: 'Lazy loading no template' },
-    { id: 'on-push',          index: 10, title: 'OnPush Detection',      subtitle: 'Change detection strategy' },
-    { id: 'forms',            index: 11, title: 'Forms Strategy',        subtitle: 'Best practices (bonus)' },
+    {
+      id: 'getter-vs-signal',
+      index: 1,
+      titleKey: 'sections.getterVsSignal.title',
+      subtitleKey: 'sections.getterVsSignal.navSubtitle',
+    },
+    {
+      id: 'lazy-loading',
+      index: 2,
+      titleKey: 'sections.lazyLoading.title',
+      subtitleKey: 'sections.lazyLoading.navSubtitle',
+    },
+    {
+      id: 'signal-readonly',
+      index: 3,
+      titleKey: 'sections.signalReadonly.title',
+      subtitleKey: 'sections.signalReadonly.navSubtitle',
+    },
+    {
+      id: 'service-scope',
+      index: 4,
+      titleKey: 'sections.serviceScope.title',
+      subtitleKey: 'sections.serviceScope.navSubtitle',
+    },
+    {
+      id: 'debounce',
+      index: 5,
+      titleKey: 'sections.inputDebounce.title',
+      subtitleKey: 'sections.inputDebounce.navSubtitle',
+    },
+    {
+      id: 'track-for',
+      index: 6,
+      titleKey: 'sections.trackFor.title',
+      subtitleKey: 'sections.trackFor.navSubtitle',
+    },
+    {
+      id: 'unsubscribe',
+      index: 7,
+      titleKey: 'sections.observableCleanup.title',
+      subtitleKey: 'sections.observableCleanup.navSubtitle',
+    },
+    {
+      id: 'shared-module',
+      index: 8,
+      titleKey: 'sections.sharedModulePattern.title',
+      subtitleKey: 'sections.sharedModulePattern.navSubtitle',
+    },
+    {
+      id: 'defer-blocks',
+      index: 9,
+      titleKey: 'sections.deferBlocks.title',
+      subtitleKey: 'sections.deferBlocks.navSubtitle',
+    },
+    {
+      id: 'on-push',
+      index: 10,
+      titleKey: 'sections.onPush.title',
+      subtitleKey: 'sections.onPush.navSubtitle',
+    },
+    {
+      id: 'forms',
+      index: 11,
+      titleKey: 'sections.formsStrategy.title',
+      subtitleKey: 'sections.formsStrategy.navSubtitle',
+    },
   ];
 
   protected readonly activeSection = signal('getter-vs-signal');

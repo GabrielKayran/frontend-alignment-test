@@ -2,19 +2,20 @@
   <div class="section__header">
     <span class="section__number">02</span>
     <div>
-      <h2 class="section__title">Lazy Loading <span class="tag-pill tag-pill--cyan">Bundle size</span></h2>
-      <p class="section__desc">
-        <code>loadChildren</code> with NgModules requires shipping an entire module graph per route.
-        <code>loadComponent</code> with standalone components produces a minimal, targeted chunk
-        containing only that component and its direct imports — nothing more.
-      </p>
+      <h2 class="section__title">
+        {{ 'sections.lazyLoading.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.lazyLoading.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.lazyLoading.description' | translate"></p>
     </div>
   </div>
 
   <div class="panel-grid">
     <div class="panel panel--anti">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern — NgModule</span>
+        <span class="panel__badge panel__badge--anti">
+          &#10007; {{ 'sections.lazyLoading.panels.anti' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeAnti"></pre>
@@ -22,7 +23,9 @@
 
     <div class="panel panel--best">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--best">&#10003; Best practice — Standalone</span>
+        <span class="panel__badge panel__badge--best">
+          &#10003; {{ 'sections.lazyLoading.panels.best' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeBest"></pre>
@@ -32,14 +35,8 @@
   <div class="insight-box">
     <div class="insight-box__icon">&#128196;</div>
     <div>
-      <strong>Why it matters</strong>
-      <p>
-        An NgModule chunk includes every component declared in that module,
-        whether the route uses them or not. Standalone lazy-loading lets the bundler
-        apply tree-shaking at the component level — the chunk only contains what's
-        directly imported by <code>DashboardComponent</code>.
-        Typical savings: <span class="highlight">20 – 60 KB</span> per route for mid-size modules.
-      </p>
+      <strong>{{ 'sections.lazyLoading.insight.title' | translate }}</strong>
+      <p [innerHTML]="'sections.lazyLoading.insight.description' | translate"></p>
     </div>
   </div>
 </section>

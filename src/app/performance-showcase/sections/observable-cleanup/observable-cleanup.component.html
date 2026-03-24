@@ -3,70 +3,63 @@
     <span class="section__number">07</span>
     <div>
       <h2 class="section__title">
-        Observable Cleanup <span class="tag-pill tag-pill--cyan">RxJS</span>
+        {{ 'sections.observableCleanup.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{
+          'sections.observableCleanup.tag' | translate
+        }}</span>
       </h2>
-      <p class="section__desc">
-        Subscriptions that outlive their component cause memory leaks and ghost event handlers.
-        Angular 16+ ships <code>takeUntilDestroyed()</code> as the canonical solution — no
-        boilerplate Subject, no <code>ngOnDestroy</code> required.
-      </p>
+      <p
+        class="section__desc"
+        [innerHTML]="'sections.observableCleanup.description' | translate"
+      ></p>
     </div>
   </div>
 
   <div class="panel-grid panel-grid--three">
     <div class="panel panel--anti">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--anti">&#10007; Manual unsubscribe</span>
+        <span class="panel__badge panel__badge--anti">
+          &#10007; {{ 'sections.observableCleanup.panels.anti' | translate }}
+        </span>
       </div>
       <pre class="code-block" [innerHTML]="codeAnti"></pre>
-      <p class="panel__note">Verbose. Easy to forget when there are multiple subscriptions.</p>
+      <p class="panel__note">{{ 'sections.observableCleanup.panels.antiNote' | translate }}</p>
     </div>
 
     <div class="panel panel--neutral">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--neutral">~ takeUntil pattern</span>
+        <span class="panel__badge panel__badge--neutral">
+          ~ {{ 'sections.observableCleanup.panels.middle' | translate }}
+        </span>
       </div>
       <pre class="code-block" [innerHTML]="codeMiddle"></pre>
-      <p class="panel__note">
-        Better — but still requires a Subject and a full ngOnDestroy lifecycle hook.
-      </p>
+      <p class="panel__note">{{ 'sections.observableCleanup.panels.middleNote' | translate }}</p>
     </div>
 
     <div class="panel panel--best">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--best">&#10003; takeUntilDestroyed</span>
+        <span class="panel__badge panel__badge--best">
+          &#10003; {{ 'sections.observableCleanup.panels.best' | translate }}
+        </span>
       </div>
       <pre class="code-block" [innerHTML]="codeBest"></pre>
-      <p class="panel__note">
-        Zero boilerplate. Works in constructors and inject() context. Angular 16+.
-      </p>
+      <p class="panel__note">{{ 'sections.observableCleanup.panels.bestNote' | translate }}</p>
     </div>
   </div>
 
   <div class="insight-box">
     <div class="insight-box__icon">&#9889;</div>
     <div>
-      <strong>Key advantage of <code>takeUntilDestroyed</code></strong>
-      <p>
-        When called inside the constructor (or any function in the inject context), it automatically
-        binds to the current component's <code>DestroyRef</code> without needing to pass it
-        explicitly. You can also pass a <code>destroyRef</code> explicitly when calling from outside
-        the inject context — e.g., a standalone service method.
-      </p>
+      <strong>{{ 'sections.observableCleanup.insight.title' | translate }}</strong>
+      <p [innerHTML]="'sections.observableCleanup.insight.description' | translate"></p>
     </div>
   </div>
 
   <div class="insight-box insight-box--warning">
     <div class="insight-box__icon">&#9888;</div>
     <div>
-      <strong>HttpClient requests do not need cleanup</strong>
-      <p>
-        Observables returned by <code>HttpClient</code> are finite — they emit a single response and
-        then complete automatically, releasing all resources without memory leaks. Applying
-        <code>takeUntilDestroyed</code> to them is harmless, but unnecessary. Reserve cleanup for
-        long-lived streams: <code>interval()</code>, <code>fromEvent()</code>, WebSocket
-        connections, and manually managed <code>Subject</code>s.
-      </p>
+      <strong>{{ 'sections.observableCleanup.warning.title' | translate }}</strong>
+      <p [innerHTML]="'sections.observableCleanup.warning.description' | translate"></p>
     </div>
   </div>
 </section>

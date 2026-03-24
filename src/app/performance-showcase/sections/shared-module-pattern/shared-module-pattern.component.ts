@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-shared-module-pattern',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './shared-module-pattern.component.html',
   styleUrl: './shared-module-pattern.component.scss',
 })
 export class SharedModulePatternComponent {
-
   readonly codeAnti = `<span class="cm">// SharedModule bundles everything together — a common anti-pattern</span>
 <span class="kw">@NgModule</span>({
   declarations: [

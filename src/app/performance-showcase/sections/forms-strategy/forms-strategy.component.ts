@@ -1,15 +1,15 @@
 import { Component, signal, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-forms-strategy',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslatePipe],
   templateUrl: './forms-strategy.component.html',
   styleUrl: './forms-strategy.component.scss',
 })
 export class FormsStrategyComponent {
-
   private readonly fb = inject(FormBuilder);
 
   protected readonly reactiveForm = this.fb.group({

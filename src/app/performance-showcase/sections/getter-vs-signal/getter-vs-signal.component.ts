@@ -1,14 +1,16 @@
-import { Component, computed, signal, effect, afterEveryRender } from '@angular/core';
+import { Component, afterEveryRender, computed, effect, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface ConsoleEntry {
   type: 'anti' | 'best';
-  message: string;
+  result: boolean;
+  translationKey: string;
 }
 
 @Component({
   selector: 'app-section-getter-vs-signal',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './getter-vs-signal.component.html',
   styleUrl: './getter-vs-signal.component.scss',
 })
@@ -19,81 +21,83 @@ export class GetterVsSignalComponent {
   protected readonly getterCallCount = signal(0);
   protected readonly computedRevalCount = signal(0);
 
-  // Plain array — safe to write during rendering (no signals, no reactive side-effects)
-  private readonly _pendingGetterLogs: ConsoleEntry[] = [];
-  // Flag: true during the flush render so the getter doesn't re-log its own flush
-  private _skipGetterLog = false;
+  private readonly pendingGetterLogs: ConsoleEntry[] = [];
+  private skipGetterLog = false;
 
-  // Anti-pattern: re-evaluates on every change detection cycle
   get hasFilterTagGetter(): boolean {
     const result = this.filterTags().includes('filter');
-    if (!this._skipGetterLog) {
-      this._pendingGetterLogs.push({
+
+    if (!this.skipGetterLog) {
+      this.pendingGetterLogs.push({
         type: 'anti',
-        message: `[GETTER] CD cycle → re-evaluated → ${result}`,
+        result,
+        translationKey: 'sections.getterVsSignal.demo.logs.getterPrefix',
       });
     }
+
     return result;
   }
 
-  // Best practice: memoized — only re-evaluates when filterTags changes
   protected readonly hasFilterTagComputed = computed(() => this.filterTags().includes('filter'));
 
   constructor() {
-    // effect() runs outside the rendering phase — signal writes are safe here.
-    // Re-runs whenever hasFilterTagComputed's dependency (filterTags) changes.
     effect(() => {
       const result = this.hasFilterTagComputed();
-      this.computedRevalCount.update((n) => n + 1);
+
+      this.computedRevalCount.update((count) => count + 1);
       this.consoleEntries.update((entries) => [
         ...entries.slice(-19),
-        { type: 'best', message: `[COMPUTED] filterTags changed → re-evaluated → ${result}` },
+        {
+          type: 'best',
+          result,
+          translationKey: 'sections.getterVsSignal.demo.logs.computedPrefix',
+        },
       ]);
     });
 
-    // afterRender fires after every render cycle.
-    // If the getter logged real calls, flush them to signals here.
-    // _skipGetterLog = true tells the getter to stay silent during the resulting flush render,
-    // then resets on the next afterRender so the component is ready for the next interaction.
     afterEveryRender(() => {
-      if (this._skipGetterLog) {
-        this._skipGetterLog = false;
+      if (this.skipGetterLog) {
+        this.skipGetterLog = false;
         return;
       }
 
-      const pending = this._pendingGetterLogs.splice(0);
-      if (pending.length === 0) return;
+      const pendingLogs = this.pendingGetterLogs.splice(0);
+      if (pendingLogs.length === 0) {
+        return;
+      }
 
-      this._skipGetterLog = true;
-      this.getterCallCount.update((n) => n + pending.length);
+      this.skipGetterLog = true;
+      this.getterCallCount.update((count) => count + pendingLogs.length);
       this.consoleEntries.update((entries) => [
-        ...entries.slice(-(20 - pending.length)),
-        ...pending,
+        ...entries.slice(-(20 - pendingLogs.length)),
+        ...pendingLogs,
       ]);
     });
   }
 
   protected triggerChangeDetection(): void {
-    // Bumping cdTriggerCount is enough — it triggers a CD cycle, the getter runs,
-    // and afterRender handles the rest honestly.
-    this.cdTriggerCount.update((n) => n + 1);
+    this.cdTriggerCount.update((count) => count + 1);
   }
 
   protected toggleFilterTag(): void {
     this.filterTags.update((tags) =>
-      tags.includes('filter') ? tags.filter((t) => t !== 'filter') : [...tags, 'filter'],
+      tags.includes('filter') ? tags.filter((tag) => tag !== 'filter') : [...tags, 'filter'],
     );
   }
 
   protected clearConsole(): void {
-    this._pendingGetterLogs.length = 0;
+    this.pendingGetterLogs.length = 0;
     this.consoleEntries.set([]);
     this.getterCallCount.set(0);
     this.computedRevalCount.set(0);
     this.cdTriggerCount.set(0);
   }
 
-  readonly codeAnti = `<span class="cm">// Called on EVERY change detection cycle — even when tags never changed</span>
+  protected booleanKey(value: boolean): string {
+    return value ? 'common.boolean.true' : 'common.boolean.false';
+  }
+
+  readonly codeAnti = `<span class="cm">// Called on EVERY change detection cycle â€” even when tags never changed</span>
 <span class="kw">get</span> <span class="fn">hasFilterTag</span>(): <span class="type">boolean</span> {
   <span class="kw">return</span> <span class="kw">this</span>.tags.<span class="fn">includes</span>(<span class="str">'filter'</span>); <span class="cm">// expensive if tags is large</span>
 }`;

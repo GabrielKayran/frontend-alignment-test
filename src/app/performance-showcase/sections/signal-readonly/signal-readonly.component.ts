@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-signal-readonly',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './signal-readonly.component.html',
   styleUrl: './signal-readonly.component.scss',
 })
 export class SignalReadonlyComponent {
-
   readonly codeAnti = `<span class="cm">// Anti-pattern: exposing WritableSignal lets ANY consumer mutate state</span>
 <span class="kw">@Injectable</span>({ providedIn: <span class="str">'root'</span> })
 <span class="kw">export class</span> <span class="type">UserService</span> {

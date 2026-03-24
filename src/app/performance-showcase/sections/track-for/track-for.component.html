@@ -3,20 +3,19 @@
     <span class="section__number">06</span>
     <div>
       <h2 class="section__title">
-        track in &#64;for <span class="tag-pill tag-pill--cyan">Performance</span>
+        {{ 'sections.trackFor.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.trackFor.tag' | translate }}</span>
       </h2>
-      <p class="section__desc">
-        Without a proper <code>track</code> expression, Angular cannot identify which items changed and
-        re-processes <strong>all N views</strong> on every list mutation. With <code>track item.id</code>,
-        only genuinely new or updated items trigger DOM mutations.
-      </p>
+      <p class="section__desc" [innerHTML]="'sections.trackFor.description' | translate"></p>
     </div>
   </div>
 
   <div class="panel-grid">
     <div class="panel panel--anti">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--anti">&#10007; track $index</span>
+        <span class="panel__badge panel__badge--anti">
+          &#10007; {{ 'sections.trackFor.panels.anti' | translate }}
+        </span>
         <span class="panel__lang">HTML</span>
       </div>
       <pre class="code-block" [innerHTML]="codeAnti"></pre>
@@ -24,7 +23,9 @@
 
     <div class="panel panel--best">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--best">&#10003; track item.id</span>
+        <span class="panel__badge panel__badge--best">
+          &#10003; {{ 'sections.trackFor.panels.best' | translate }}
+        </span>
         <span class="panel__lang">HTML</span>
       </div>
       <pre class="code-block" [innerHTML]="codeBest"></pre>
@@ -33,32 +34,44 @@
 
   <div class="demo-box">
     <div class="demo-box__header">
-      <span class="demo-label">Live demo — watch the view re-process counter</span>
+      <span class="demo-label">{{ 'sections.trackFor.demo.label' | translate }}</span>
       <div class="demo-actions">
-        <button class="btn btn--ghost" (click)="resetDemo()">Reset</button>
+        <button class="btn btn--ghost" (click)="resetDemo()">
+          {{ 'sections.trackFor.demo.reset' | translate }}
+        </button>
       </div>
     </div>
 
     <div class="track-demo">
-
       <div class="track-side track-side--bad">
         <div class="track-side__header">
-          <span class="track-side__label track-side__label--anti">track $index</span>
+          <span class="track-side__label track-side__label--anti">
+            {{ 'sections.trackFor.demo.bad.label' | translate }}
+          </span>
           <div class="track-side__actions">
-            <button class="btn btn--outline" (click)="addBad()">+ Prepend</button>
-            <button class="btn btn--ghost" (click)="shuffleBad()">Shuffle</button>
+            <button class="btn btn--outline" (click)="addBad()">
+              {{ 'sections.trackFor.demo.bad.prepend' | translate }}
+            </button>
+            <button class="btn btn--ghost" (click)="shuffleBad()">
+              {{ 'sections.trackFor.demo.bad.shuffle' | translate }}
+            </button>
           </div>
         </div>
         <div class="track-ops track-ops--anti">
-          <span class="track-ops__label">DOM views processed</span>
+          <span class="track-ops__label">{{
+            'sections.trackFor.demo.domViewsProcessed' | translate
+          }}</span>
           <span class="track-ops__value">{{ badOps() }}</span>
         </div>
         <div class="track-list">
           @for (item of badItems(); track $index) {
             <div class="track-item" [class.track-item--hot]="item.renders > 1">
-              <span class="track-item__name">{{ item.name }}</span>
-              <span class="track-item__renders track-item__renders--anti" title="times re-processed">
-                ×{{ item.renders }}
+              <span class="track-item__name">{{ item.nameKey | translate: item.nameParams }}</span>
+              <span
+                class="track-item__renders track-item__renders--anti"
+                [title]="'sections.trackFor.demo.reprocessedTitle' | translate"
+              >
+                x{{ item.renders }}
               </span>
             </div>
           }
@@ -67,47 +80,48 @@
 
       <div class="track-side track-side--good">
         <div class="track-side__header">
-          <span class="track-side__label track-side__label--best">track item.id</span>
+          <span class="track-side__label track-side__label--best">
+            {{ 'sections.trackFor.demo.good.label' | translate }}
+          </span>
           <div class="track-side__actions">
-            <button class="btn btn--outline" (click)="addGood()">+ Prepend</button>
-            <button class="btn btn--ghost" (click)="shuffleGood()">Shuffle</button>
+            <button class="btn btn--outline" (click)="addGood()">
+              {{ 'sections.trackFor.demo.good.prepend' | translate }}
+            </button>
+            <button class="btn btn--ghost" (click)="shuffleGood()">
+              {{ 'sections.trackFor.demo.good.shuffle' | translate }}
+            </button>
           </div>
         </div>
         <div class="track-ops track-ops--best">
-          <span class="track-ops__label">DOM views processed</span>
+          <span class="track-ops__label">{{
+            'sections.trackFor.demo.domViewsProcessed' | translate
+          }}</span>
           <span class="track-ops__value">{{ goodOps() }}</span>
         </div>
         <div class="track-list">
           @for (item of goodItems(); track item.id) {
             <div class="track-item">
-              <span class="track-item__name">{{ item.name }}</span>
-              <span class="track-item__renders track-item__renders--best" title="times re-processed">
-                ×{{ item.renders }}
+              <span class="track-item__name">{{ item.nameKey | translate: item.nameParams }}</span>
+              <span
+                class="track-item__renders track-item__renders--best"
+                [title]="'sections.trackFor.demo.reprocessedTitle' | translate"
+              >
+                x{{ item.renders }}
               </span>
             </div>
           }
         </div>
       </div>
-
     </div>
 
-    <p class="demo-tip">
-      <strong>×N</strong> shows how many times each view was re-processed by Angular.
-      On the <em>track $index</em> side, all items increment on every operation — even unchanged ones.
-      On the <em>track item.id</em> side, only the new item starts at ×1; existing items stay untouched.
-    </p>
+    <p class="demo-tip" [innerHTML]="'sections.trackFor.demo.tip' | translate"></p>
   </div>
 
   <div class="insight-box">
     <div class="insight-box__icon">&#128161;</div>
     <div>
-      <strong>When <code>track $index</code> is acceptable</strong>
-      <p>
-        If the list is <strong>order-stable</strong> (never reordered, items only appended at the end,
-        never removed from the middle) and items carry no internal DOM state (inputs, animations),
-        <code>$index</code> is fine. In any other scenario — shuffle, prepend, arbitrary removal,
-        pagination — prefer <code>track item.id</code> or another stable identity property.
-      </p>
+      <strong>{{ 'sections.trackFor.insight.title' | translate }}</strong>
+      <p [innerHTML]="'sections.trackFor.insight.description' | translate"></p>
     </div>
   </div>
 </section>

@@ -1,0 +1,294 @@
+{
+  "common": {
+    "boolean": {
+      "true": "true",
+      "false": "false"
+    }
+  },
+  "layout": {
+    "language": {
+      "label": "Language",
+      "ariaLabel": "Language selector",
+      "english": "English",
+      "portuguese": "Portuguese"
+    },
+    "sidebar": {
+      "navigationAriaLabel": "Section navigation",
+      "title": "Performance<br />Patterns",
+      "description": "Anti-patterns & best practices for modern Angular apps.",
+      "techStack": "Zone.js - Signals - RxJS 7",
+      "creditPrefix": "developed by"
+    }
+  },
+  "sections": {
+    "getterVsSignal": {
+      "title": "Getter vs Signal",
+      "navSubtitle": "Change detection cost",
+      "tag": "Computed",
+      "description": "A class getter is re-evaluated on <strong>every change detection cycle</strong> regardless of whether its dependencies changed. A <code>computed()</code> signal memoizes the result and only recalculates when a tracked signal dependency changes.",
+      "panels": {
+        "anti": "Anti-pattern",
+        "best": "Best practice"
+      },
+      "demo": {
+        "label": "Live demo",
+        "toggleFilterTag": "Toggle \"filter\" tag",
+        "triggerChangeDetection": "Trigger change detection",
+        "clear": "Clear",
+        "stats": {
+          "cdTriggers": "CD triggers",
+          "getterCallCount": "Getter call count",
+          "computedReevaluations": "Computed re-evaluations",
+          "getterResult": "Getter result",
+          "computedResult": "Computed result"
+        },
+        "consoleTitle": "Console output",
+        "consoleEmpty": "Click \"Trigger change detection\" to see the difference...",
+        "tip": "Each CD trigger increments the getter call count. The computed re-evaluation count only increases when you \"Toggle filter tag\" - regardless of how many CD cycles occurred.",
+        "logs": {
+          "getterPrefix": "[GETTER] CD cycle -> re-evaluated ->",
+          "computedPrefix": "[COMPUTED] filterTags changed -> re-evaluated ->"
+        }
+      }
+    },
+    "lazyLoading": {
+      "title": "Lazy Loading",
+      "navSubtitle": "Bundle strategy",
+      "tag": "Bundle size",
+      "description": "<code>loadChildren</code> with NgModules requires shipping an entire module graph per route. <code>loadComponent</code> with standalone components produces a minimal, targeted chunk containing only that component and its direct imports - nothing more.",
+      "panels": {
+        "anti": "Anti-pattern - NgModule",
+        "best": "Best practice - Standalone"
+      },
+      "insight": {
+        "title": "Why it matters",
+        "description": "An NgModule chunk includes every component declared in that module, whether the route uses them or not. Standalone lazy-loading lets the bundler apply tree-shaking at the component level - the chunk only contains what's directly imported by <code>DashboardComponent</code>. Typical savings: <span class='highlight'>20 - 60 KB</span> per route for mid-size modules."
+      }
+    },
+    "signalReadonly": {
+      "title": "Signal Encapsulation",
+      "navSubtitle": "Writable vs Readonly",
+      "tag": "Encapsulation",
+      "description": "Exposing a <code>WritableSignal</code> publicly breaks encapsulation - any consumer can mutate state the service is supposed to own. Use <code>.asReadonly()</code> to expose a view-only projection while keeping mutation methods private to the service.",
+      "panels": {
+        "anti": "Anti-pattern",
+        "best": "Best practice"
+      },
+      "insight": {
+        "title": "Rule of thumb",
+        "description": "Private <code>_signal = signal()</code> inside the service -> public <code>signal = this._signal.asReadonly()</code> for consumers. This is the same principle as a private setter with a public getter in traditional OOP, but enforced at the type level by Angular's signal API."
+      }
+    },
+    "serviceScope": {
+      "title": "Service Scope",
+      "navSubtitle": "Root vs component-level",
+      "tag": "DI",
+      "description": "<code>providedIn: 'root'</code> creates a singleton that lives for the entire app lifetime. For ephemeral state - like a multi-step wizard - use component-level providers so the service is created fresh when the component mounts and garbage-collected when it is destroyed.",
+      "panels": {
+        "anti": "Anti-pattern - global singleton",
+        "best": "Best practice - component-scoped"
+      },
+      "insight": {
+        "title": "Lifecycle alignment",
+        "description": "Component-scoped providers are tied to the component's destroy lifecycle. This means no manual reset logic, no stale state between wizard sessions, and automatic memory reclamation - Angular handles it for you. All child components of the wizard also receive the same scoped instance."
+      }
+    },
+    "inputDebounce": {
+      "title": "Input Debounce",
+      "navSubtitle": "RxJS operators",
+      "tag": "RxJS",
+      "description": "Without <code>debounceTime</code>, every keystroke fires a network request. With <code>debounceTime(300) + distinctUntilChanged()</code>, requests only fire after the user pauses - and only when the value actually changed.",
+      "panels": {
+        "anti": "Anti-pattern",
+        "best": "Best practice"
+      },
+      "demo": {
+        "label": "Live demo - type something",
+        "reset": "Reset",
+        "placeholder": "Search users...",
+        "stats": {
+          "withoutDebounce": "X Without debounce - API calls fired",
+          "withDebounce": "OK With debounce - API calls fired"
+        },
+        "logKinds": {
+          "immediate": "IMMEDIATE",
+          "debounced": "DEBOUNCED"
+        },
+        "empty": "Start typing to see requests logged here..."
+      }
+    },
+    "trackFor": {
+      "title": "track in @for",
+      "navSubtitle": "DOM reconciliation",
+      "tag": "Performance",
+      "description": "Without a proper <code>track</code> expression, Angular cannot identify which items changed and re-processes <strong>all N views</strong> on every list mutation. With <code>track item.id</code>, only genuinely new or updated items trigger DOM mutations.",
+      "panels": {
+        "anti": "track $index",
+        "best": "track item.id"
+      },
+      "demo": {
+        "label": "Live demo - watch the view re-process counter",
+        "reset": "Reset",
+        "domViewsProcessed": "DOM views processed",
+        "reprocessedTitle": "times re-processed",
+        "tip": "<strong>xN</strong> shows how many times each view was re-processed by Angular. On the <em>track $index</em> side, all items increment on every operation - even unchanged ones. On the <em>track item.id</em> side, only the new item starts at x1; existing items stay untouched.",
+        "bad": {
+          "label": "track $index",
+          "prepend": "+ Prepend",
+          "shuffle": "Shuffle"
+        },
+        "good": {
+          "label": "track item.id",
+          "prepend": "+ Prepend",
+          "shuffle": "Shuffle"
+        },
+        "items": {
+          "designTokens": "Design tokens",
+          "authMiddleware": "Auth middleware",
+          "apiRateLimiting": "API rate limiting",
+          "unitTestCoverage": "Unit test coverage",
+          "dockerSetup": "Docker setup",
+          "generatedTask": "Task #{{id}}"
+        }
+      },
+      "insight": {
+        "title": "When track $index is acceptable",
+        "description": "If the list is <strong>order-stable</strong> (never reordered, items only appended at the end, never removed from the middle) and items carry no internal DOM state (inputs, animations), <code>$index</code> is fine. In any other scenario - shuffle, prepend, arbitrary removal, pagination - prefer <code>track item.id</code> or another stable identity property."
+      }
+    },
+    "observableCleanup": {
+      "title": "Observable Cleanup",
+      "navSubtitle": "Subscription management",
+      "tag": "RxJS",
+      "description": "Subscriptions that outlive their component cause memory leaks and ghost event handlers. Angular 16+ ships <code>takeUntilDestroyed()</code> as the canonical solution - no boilerplate Subject, no <code>ngOnDestroy</code> required.",
+      "panels": {
+        "anti": "Manual unsubscribe",
+        "antiNote": "Verbose. Easy to forget when there are multiple subscriptions.",
+        "middle": "takeUntil pattern",
+        "middleNote": "Better - but still requires a Subject and a full ngOnDestroy lifecycle hook.",
+        "best": "takeUntilDestroyed",
+        "bestNote": "Zero boilerplate. Works in constructors and inject() context. Angular 16+."
+      },
+      "insight": {
+        "title": "Key advantage of takeUntilDestroyed",
+        "description": "When called inside the constructor (or any function in the inject context), it automatically binds to the current component's <code>DestroyRef</code> without needing to pass it explicitly. You can also pass a <code>destroyRef</code> explicitly when calling from outside the inject context - for example, a standalone service method."
+      },
+      "warning": {
+        "title": "HttpClient requests do not need cleanup",
+        "description": "Observables returned by <code>HttpClient</code> are finite - they emit a single response and then complete automatically, releasing all resources without memory leaks. Applying <code>takeUntilDestroyed</code> to them is harmless, but unnecessary. Reserve cleanup for long-lived streams: <code>interval()</code>, <code>fromEvent()</code>, WebSocket connections, and manually managed <code>Subject</code>s."
+      }
+    },
+    "sharedModulePattern": {
+      "title": "SharedModule Anti-pattern",
+      "navSubtitle": "Modern standalone approach",
+      "tag": "Architecture",
+      "description": "The <code>SharedModule</code> pattern was a pragmatic solution in the NgModule world - declare once, export everywhere. With standalone components it becomes a liability: it forces every consumer to load components they never use, bloats chunk sizes, and creates invisible coupling through implicit re-exports.",
+      "panels": {
+        "anti": "SharedModule",
+        "best": "Direct standalone imports"
+      },
+      "insights": {
+        "anti": {
+          "title": "SharedModule problems",
+          "items": {
+            "item1": "All declared components included in every consumer's bundle",
+            "item2": "Implicit dependency - hard to know what a module actually needs",
+            "item3": "Single point of coupling - touching SharedModule risks regressions everywhere",
+            "item4": "Prevents effective tree-shaking by the bundler"
+          }
+        },
+        "best": {
+          "title": "Standalone benefits",
+          "items": {
+            "item1": "Each component declares exactly what it needs - nothing more",
+            "item2": "Bundler can tree-shake at the component level",
+            "item3": "Dependencies are explicit and colocated with the component",
+            "item4": "Smaller chunks, faster lazy loading, easier refactoring"
+          }
+        }
+      }
+    },
+    "deferBlocks": {
+      "title": "@defer Blocks",
+      "navSubtitle": "Lazy loading in the template",
+      "tag": "Angular 17+",
+      "description": "Eagerly loaded components bloat the initial bundle even when the user never scrolls to them. <code>@defer</code> performs <strong>automatic code-splitting</strong> for the deferred component - no bundler config, no <code>loadComponent</code>, just a template declaration.",
+      "panels": {
+        "anti": "Eager loading",
+        "best": "@defer with helper blocks",
+        "triggers": "All available triggers"
+      },
+      "insight": {
+        "title": "Automatic code-splitting",
+        "description": "The Angular CLI detects components inside <code>@defer</code> and automatically moves them into separate chunks at build time. No extra configuration needed - the same mechanism used by <code>loadComponent</code> in routes, but applicable to any part of the template. The <code>@placeholder</code> block renders immediately; the main content is downloaded and rendered only when the trigger fires."
+      },
+      "warning": {
+        "title": "When not to use @defer",
+        "description": "Components above the fold, critical for LCP (Largest Contentful Paint), or that require immediate SSR hydration <strong>should not be deferred</strong>. Reserve <code>@defer</code> for secondary content: charts, rich-text editors, data grids, inactive tabs, and anything below the initial visible screen."
+      }
+    },
+    "onPush": {
+      "title": "OnPush Change Detection",
+      "navSubtitle": "Change detection strategy",
+      "tag": "Performance",
+      "description": "With the default strategy (<code>Default</code>), Angular checks the template of <strong>every component</strong> on each change detection cycle - even when nothing relevant changed. <code>OnPush</code> puts the component to sleep: it only re-checks when an <code>@Input</code> reference changes, a Signal emits, or the <code>async</code> pipe receives a new value.",
+      "panels": {
+        "anti": "ChangeDetectionStrategy.Default",
+        "best": "ChangeDetectionStrategy.OnPush"
+      },
+      "demo": {
+        "label": "Live demo - observe when each strategy re-renders",
+        "triggerExternalCd": "Trigger external CD",
+        "changeSignal": "Change Signal / @Input",
+        "reset": "Reset",
+        "stats": {
+          "defaultRenders": "Default - renders",
+          "onPushRenders": "OnPush - renders",
+          "signalVersion": "Signal version"
+        },
+        "legend": {
+          "externalCd": "<strong>Trigger external CD</strong> - simulates setTimeout, HTTP response, parent event. Default re-renders. OnPush <em>does not re-render</em>.",
+          "signalChange": "<strong>Change Signal / @Input</strong> - both strategies re-render, because Angular knows the relevant state changed."
+        },
+        "tip": "Press <strong>Trigger external CD</strong> several times and notice OnPush renders stays at zero - the component literally skips all binding checks."
+      },
+      "insight": {
+        "title": "OnPush + Signals = the ideal combination",
+        "description": "With Signals, Angular knows exactly <em>which</em> node in the template changed and updates only that DOM node, without traversing the entire component tree. Declaring <code>OnPush</code> formalizes this in the component's CD strategy, eliminating unnecessary checks even in Zone.js apps. In components built exclusively on Signals, Angular can eventually skip CD entirely (Zoneless Architecture - Angular 18+)."
+      }
+    },
+    "formsStrategy": {
+      "title": "Forms Strategy",
+      "navSubtitle": "Best practices (bonus)",
+      "tag": "Bonus",
+      "description": "Use <strong>Reactive Forms</strong> for complex, dynamic, or programmatically validated forms - validation lives in TypeScript, is easy to test, and composes well. Use <strong>Template-driven</strong> (<code>ngModel</code>) only for simple, isolated inputs where no cross-field validation or dynamic control generation is needed.",
+      "panels": {
+        "anti": "Template-driven for complex forms",
+        "best": "Reactive form"
+      },
+      "demo": {
+        "label": "Live reactive form",
+        "success": "Form submitted successfully - validation passed.",
+        "submit": "Submit",
+        "fields": {
+          "email": {
+            "label": "Email",
+            "placeholder": "you@example.com",
+            "errors": {
+              "required": "Email is required.",
+              "invalid": "Enter a valid email address."
+            }
+          },
+          "username": {
+            "label": "Username",
+            "placeholder": "min. 3 characters",
+            "errors": {
+              "required": "Username is required.",
+              "minLength": "Username must be at least 3 characters."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -18,8 +18,13 @@
   color: var(--text-2);
   line-height: 1.5;
 
-  strong { color: var(--text-1); }
-  em { color: var(--text-3); font-style: normal; }
+  strong {
+    color: var(--text-1);
+  }
+  em {
+    color: var(--text-3);
+    font-style: normal;
+  }
 }
 
 .legend-dot {
@@ -30,5 +35,9 @@
   margin-top: 5px;
 }
 
-.legend-dot--anti { background: var(--anti); }
-.legend-dot--best { background: var(--best); }
+.legend-dot--anti {
+  background: var(--anti);
+}
+.legend-dot--best {
+  background: var(--best);
+}

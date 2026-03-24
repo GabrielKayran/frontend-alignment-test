@@ -1,5 +1,6 @@
-import { Component, signal, inject, DestroyRef, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -11,12 +12,11 @@ interface SearchEntry {
 @Component({
   selector: 'app-section-input-debounce',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './input-debounce.component.html',
   styleUrl: './input-debounce.component.scss',
 })
 export class InputDebounceComponent implements OnInit {
-
   private readonly destroyRef = inject(DestroyRef);
   private readonly searchInput$ = new Subject<string>();
 
@@ -26,33 +26,20 @@ export class InputDebounceComponent implements OnInit {
   protected readonly searchLog = signal<SearchEntry[]>([]);
 
   ngOnInit(): void {
-    // Best-practice: subscribe with takeUntilDestroyed + explicit DestroyRef
-    // (required outside the inject() context / constructor)
     this.searchInput$
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: query => {
-          this.debouncedCallCount.update(n => n + 1);
-          this.searchLog.update(log => [
-            { query, kind: 'debounced' },
-            ...log.slice(0, 11),
-          ]);
+        next: (query) => {
+          this.debouncedCallCount.update((count) => count + 1);
+          this.searchLog.update((log) => [{ query, kind: 'debounced' }, ...log.slice(0, 11)]);
         },
       });
   }
 
   protected onSearchInput(value: string): void {
     this.searchQuery.set(value);
-    // Simulates an API call on every keystroke (anti-pattern — no throttle)
-    this.immediateCallCount.update(n => n + 1);
-    this.searchLog.update(log => [
-      { query: value, kind: 'immediate' },
-      ...log.slice(0, 11),
-    ]);
+    this.immediateCallCount.update((count) => count + 1);
+    this.searchLog.update((log) => [{ query: value, kind: 'immediate' }, ...log.slice(0, 11)]);
     this.searchInput$.next(value);
   }
 
@@ -63,7 +50,13 @@ export class InputDebounceComponent implements OnInit {
     this.searchLog.set([]);
   }
 
-  readonly codeAnti = `<span class="cm">// Every keystroke fires an HTTP request — no throttle, no dedup</span>
+  protected kindKey(kind: SearchEntry['kind']): string {
+    return kind === 'immediate'
+      ? 'sections.inputDebounce.demo.logKinds.immediate'
+      : 'sections.inputDebounce.demo.logKinds.debounced';
+  }
+
+  readonly codeAnti = `<span class="cm">// Every keystroke fires an HTTP request â€” no throttle, no dedup</span>
 <span class="fn">onSearchInput</span>(value: <span class="type">string</span>): <span class="type">void</span> {
   <span class="kw">this</span>.apiService.<span class="fn">search</span>(value).<span class="fn">subscribe</span>({
     next: results => <span class="kw">this</span>.results.<span class="fn">set</span>(results),

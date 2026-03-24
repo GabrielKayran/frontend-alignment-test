@@ -1,96 +1,102 @@
 import { Component, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface DemoItem {
   id: number;
-  name: string;
+  nameKey: string;
+  nameParams?: { id: number };
   renders: number;
 }
 
 const INITIAL_ITEMS: DemoItem[] = [
-  { id: 1, name: 'Design tokens', renders: 1 },
-  { id: 2, name: 'Auth middleware', renders: 1 },
-  { id: 3, name: 'API rate limiting', renders: 1 },
-  { id: 4, name: 'Unit test coverage', renders: 1 },
-  { id: 5, name: 'Docker setup', renders: 1 },
+  { id: 1, nameKey: 'sections.trackFor.demo.items.designTokens', renders: 1 },
+  { id: 2, nameKey: 'sections.trackFor.demo.items.authMiddleware', renders: 1 },
+  { id: 3, nameKey: 'sections.trackFor.demo.items.apiRateLimiting', renders: 1 },
+  { id: 4, nameKey: 'sections.trackFor.demo.items.unitTestCoverage', renders: 1 },
+  { id: 5, nameKey: 'sections.trackFor.demo.items.dockerSetup', renders: 1 },
 ];
 
 @Component({
   selector: 'app-section-track-for',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './track-for.component.html',
   styleUrl: './track-for.component.scss',
 })
 export class TrackForComponent {
+  private nextBadId = 6;
+  private nextGoodId = 6;
 
-  private _nextBadId = 6;
-  private _nextGoodId = 6;
-
-  protected badItems = signal<DemoItem[]>(INITIAL_ITEMS.map(i => ({ ...i })));
-  protected goodItems = signal<DemoItem[]>(INITIAL_ITEMS.map(i => ({ ...i })));
+  protected badItems = signal<DemoItem[]>(INITIAL_ITEMS.map((item) => ({ ...item })));
+  protected goodItems = signal<DemoItem[]>(INITIAL_ITEMS.map((item) => ({ ...item })));
 
   protected badOps = signal(5);
   protected goodOps = signal(5);
 
   protected addBad(): void {
-    const id = this._nextBadId++;
-    const item: DemoItem = { id, name: `Task #${id}`, renders: 0 };
-    // Simulates track $index: a list change forces Angular to re-evaluate ALL views
-    // because it can only match items by position, not by identity.
-    this.badItems.update(items =>
-      [item, ...items].map(i => ({ ...i, renders: i.renders + 1 }))
+    const id = this.nextBadId++;
+    const item: DemoItem = {
+      id,
+      nameKey: 'sections.trackFor.demo.items.generatedTask',
+      nameParams: { id },
+      renders: 0,
+    };
+
+    this.badItems.update((items) =>
+      [item, ...items].map((entry) => ({ ...entry, renders: entry.renders + 1 })),
     );
-    this.badOps.update(n => n + this.badItems().length);
+    this.badOps.update((count) => count + this.badItems().length);
   }
 
   protected addGood(): void {
-    const id = this._nextGoodId++;
-    const item: DemoItem = { id, name: `Task #${id}`, renders: 1 };
-    // Simulates track item.id: Angular creates exactly 1 new view.
-    // Existing views just shift their position in the DOM — no re-render.
-    this.goodItems.update(items => [item, ...items]);
-    this.goodOps.update(n => n + 1);
+    const id = this.nextGoodId++;
+    const item: DemoItem = {
+      id,
+      nameKey: 'sections.trackFor.demo.items.generatedTask',
+      nameParams: { id },
+      renders: 1,
+    };
+
+    this.goodItems.update((items) => [item, ...items]);
+    this.goodOps.update((count) => count + 1);
   }
 
   protected shuffleBad(): void {
-    // With $index: a reorder looks like N full item replacements to Angular.
-    this.badItems.update(items => {
-      const arr = [...items].sort(() => Math.random() - 0.5);
-      return arr.map(i => ({ ...i, renders: i.renders + 1 }));
+    this.badItems.update((items) => {
+      const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+      return shuffledItems.map((item) => ({ ...item, renders: item.renders + 1 }));
     });
-    this.badOps.update(n => n + this.badItems().length);
+    this.badOps.update((count) => count + this.badItems().length);
   }
 
   protected shuffleGood(): void {
-    // With item.id: Angular recognises the same IDs and simply reorders DOM nodes.
-    // Zero re-renders, zero DOM mutations beyond moving nodes.
-    this.goodItems.update(items => [...items].sort(() => Math.random() - 0.5));
+    this.goodItems.update((items) => [...items].sort(() => Math.random() - 0.5));
   }
 
   protected resetDemo(): void {
-    this._nextBadId = 6;
-    this._nextGoodId = 6;
-    this.badItems.set(INITIAL_ITEMS.map(i => ({ ...i })));
-    this.goodItems.set(INITIAL_ITEMS.map(i => ({ ...i })));
+    this.nextBadId = 6;
+    this.nextGoodId = 6;
+    this.badItems.set(INITIAL_ITEMS.map((item) => ({ ...item })));
+    this.goodItems.set(INITIAL_ITEMS.map((item) => ({ ...item })));
     this.badOps.set(5);
     this.goodOps.set(5);
   }
 
-  readonly codeAnti = `<span class="cm">// ❌ track $index — position as identity</span>
+  readonly codeAnti = `<span class="cm">// âŒ track $index â€” position as identity</span>
 <span class="tag">@for</span> (<span class="kw">item of</span> tasks(); <span class="kw">track</span> <span class="attr">$index</span>) {
   <span class="tag">&lt;app-task-card</span> <span class="attr">[task]</span>=<span class="str">"item"</span> <span class="tag">/&gt;</span>
 }
 
 <span class="cm">// On prepend, shuffle or mid-list removal:</span>
-<span class="cm">// Angular re-processes ALL N views — O(n) DOM operations.</span>
+<span class="cm">// Angular re-processes ALL N views â€” O(n) DOM operations.</span>
 <span class="cm">// DOM state (typed inputs, animations) does not follow the item.</span>`;
 
-  readonly codeBest = `<span class="cm">// ✅ track item.id — stable identity per item</span>
+  readonly codeBest = `<span class="cm">// âœ… track item.id â€” stable identity per item</span>
 <span class="tag">@for</span> (<span class="kw">item of</span> tasks(); <span class="kw">track</span> <span class="attr">item.id</span>) {
   <span class="tag">&lt;app-task-card</span> <span class="attr">[task]</span>=<span class="str">"item"</span> <span class="tag">/&gt;</span>
 }
 
-<span class="cm">// On prepend: Angular creates 1 new view — O(1) DOM creation.</span>
-<span class="cm">// On shuffle: reorders DOM nodes without re-rendering — O(n) moves.</span>
+<span class="cm">// On prepend: Angular creates 1 new view â€” O(1) DOM creation.</span>
+<span class="cm">// On shuffle: reorders DOM nodes without re-rendering â€” O(n) moves.</span>
 <span class="cm">// DOM state correctly follows each item in both cases.</span>`;
 }

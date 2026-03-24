@@ -3,21 +3,19 @@
     <span class="section__number">10</span>
     <div>
       <h2 class="section__title">
-        OnPush Change Detection <span class="tag-pill tag-pill--cyan">Performance</span>
+        {{ 'sections.onPush.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.onPush.tag' | translate }}</span>
       </h2>
-      <p class="section__desc">
-        With the default strategy (<code>Default</code>), Angular checks the template of
-        <strong>every component</strong> on each change detection cycle — even when nothing relevant changed.
-        <code>OnPush</code> puts the component to sleep: it only re-checks when an <code>@Input</code>
-        reference changes, a Signal emits, or the <code>async</code> pipe receives a new value.
-      </p>
+      <p class="section__desc" [innerHTML]="'sections.onPush.description' | translate"></p>
     </div>
   </div>
 
   <div class="panel-grid">
     <div class="panel panel--anti">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--anti">&#10007; ChangeDetectionStrategy.Default</span>
+        <span class="panel__badge panel__badge--anti">
+          &#10007; {{ 'sections.onPush.panels.anti' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeAnti"></pre>
@@ -25,7 +23,9 @@
 
     <div class="panel panel--best">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--best">&#10003; ChangeDetectionStrategy.OnPush</span>
+        <span class="panel__badge panel__badge--best">
+          &#10003; {{ 'sections.onPush.panels.best' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeBest"></pre>
@@ -34,25 +34,37 @@
 
   <div class="demo-box">
     <div class="demo-box__header">
-      <span class="demo-label">Live demo — observe when each strategy re-renders</span>
+      <span class="demo-label">{{ 'sections.onPush.demo.label' | translate }}</span>
       <div class="demo-actions">
-        <button class="btn btn--outline" (click)="triggerCD()">Trigger external CD</button>
-        <button class="btn btn--primary" (click)="changeSignal()">Change Signal / @Input</button>
-        <button class="btn btn--ghost" (click)="resetDemo()">Reset</button>
+        <button class="btn btn--outline" (click)="triggerCD()">
+          {{ 'sections.onPush.demo.triggerExternalCd' | translate }}
+        </button>
+        <button class="btn btn--primary" (click)="changeSignal()">
+          {{ 'sections.onPush.demo.changeSignal' | translate }}
+        </button>
+        <button class="btn btn--ghost" (click)="resetDemo()">
+          {{ 'sections.onPush.demo.reset' | translate }}
+        </button>
       </div>
     </div>
 
     <div class="demo-stats">
       <div class="stat-card">
-        <span class="stat-card__label">Default — renders</span>
+        <span class="stat-card__label">{{
+          'sections.onPush.demo.stats.defaultRenders' | translate
+        }}</span>
         <span class="stat-card__value stat-card__value--anti">{{ defaultRenders() }}</span>
       </div>
       <div class="stat-card">
-        <span class="stat-card__label">OnPush — renders</span>
+        <span class="stat-card__label">{{
+          'sections.onPush.demo.stats.onPushRenders' | translate
+        }}</span>
         <span class="stat-card__value stat-card__value--best">{{ onPushRenders() }}</span>
       </div>
       <div class="stat-card">
-        <span class="stat-card__label">Signal version</span>
+        <span class="stat-card__label">{{
+          'sections.onPush.demo.stats.signalVersion' | translate
+        }}</span>
         <span class="stat-card__value stat-card__value--neutral">{{ signalVersion() }}</span>
       </div>
     </div>
@@ -60,34 +72,22 @@
     <div class="onpush-legend">
       <div class="legend-row">
         <span class="legend-dot legend-dot--anti"></span>
-        <span><strong>Trigger external CD</strong> — simulates setTimeout, HTTP response, parent event.
-          Default re-renders. OnPush <em>does not re-render</em>.</span>
+        <span [innerHTML]="'sections.onPush.demo.legend.externalCd' | translate"></span>
       </div>
       <div class="legend-row">
         <span class="legend-dot legend-dot--best"></span>
-        <span><strong>Change Signal / @Input</strong> — both strategies re-render, because Angular
-          knows the relevant state changed.</span>
+        <span [innerHTML]="'sections.onPush.demo.legend.signalChange' | translate"></span>
       </div>
     </div>
 
-    <p class="demo-tip">
-      Press <strong>Trigger external CD</strong> several times and notice OnPush renders stays at zero —
-      the component literally skips all binding checks.
-    </p>
+    <p class="demo-tip" [innerHTML]="'sections.onPush.demo.tip' | translate"></p>
   </div>
 
-  <div class="insight-box" style="margin-top: 16px;">
+  <div class="insight-box" style="margin-top: 16px">
     <div class="insight-box__icon">&#9889;</div>
     <div>
-      <strong>OnPush + Signals = the ideal combination</strong>
-      <p>
-        With Signals, Angular knows exactly <em>which</em> node in the template changed and updates
-        only that DOM node, without traversing the entire component tree.
-        Declaring <code>OnPush</code> formalizes this in the component's CD strategy,
-        eliminating unnecessary checks even in Zone.js apps. In components built exclusively
-        on Signals, Angular can eventually skip CD entirely
-        (Zoneless Architecture — Angular 18+).
-      </p>
+      <strong>{{ 'sections.onPush.insight.title' | translate }}</strong>
+      <p [innerHTML]="'sections.onPush.insight.description' | translate"></p>
     </div>
   </div>
 </section>

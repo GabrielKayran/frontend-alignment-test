@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-lazy-loading',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './lazy-loading.component.html',
   styleUrl: './lazy-loading.component.scss',
 })
 export class LazyLoadingComponent {
-
   readonly codeAnti = `<span class="cm">// Old approach — requires a full NgModule wrapper</span>
 <span class="kw">const</span> routes: <span class="type">Routes</span> = [{
   path: <span class="str">'dashboard'</span>,

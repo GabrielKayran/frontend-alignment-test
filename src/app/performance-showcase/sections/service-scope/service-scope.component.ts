@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-service-scope',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './service-scope.component.html',
   styleUrl: './service-scope.component.scss',
 })
 export class ServiceScopeComponent {
-
   readonly codeAnti = `<span class="cm">// providedIn: 'root' creates a singleton that lives for the entire app.</span>
 <span class="cm">// Fine for global services, but wrong for wizard/form state.</span>
 <span class="kw">@Injectable</span>({ providedIn: <span class="str">'root'</span> })

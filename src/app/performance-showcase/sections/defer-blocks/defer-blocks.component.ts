@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-defer-blocks',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './defer-blocks.component.html',
   styleUrl: './defer-blocks.component.scss',
 })
 export class DeferBlocksComponent {
-
   readonly codeAnti = `<span class="cm">// ❌ Eager loading — full bundle sent to the client</span>
 <span class="cm">// even if the component is below the fold or rarely used</span>
 <span class="tag">&lt;app-heavy-chart</span> <span class="attr">[data]</span>=<span class="str">"analytics()"</span> <span class="tag">/&gt;</span>

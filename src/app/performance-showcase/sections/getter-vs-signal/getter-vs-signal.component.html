@@ -3,20 +3,19 @@
     <span class="section__number">01</span>
     <div>
       <h2 class="section__title">
-        Getter vs Signal <span class="tag-pill tag-pill--cyan">Computed</span>
+        {{ 'sections.getterVsSignal.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.getterVsSignal.tag' | translate }}</span>
       </h2>
-      <p class="section__desc">
-        A class getter is re-evaluated on <strong>every change detection cycle</strong> regardless
-        of whether its dependencies changed. A <code>computed()</code> signal memoizes the result
-        and only recalculates when a tracked signal dependency changes.
-      </p>
+      <p class="section__desc" [innerHTML]="'sections.getterVsSignal.description' | translate"></p>
     </div>
   </div>
 
   <div class="panel-grid">
     <div class="panel panel--anti">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--anti">&#10007; Anti-pattern</span>
+        <span class="panel__badge panel__badge--anti">
+          &#10007; {{ 'sections.getterVsSignal.panels.anti' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeAnti"></pre>
@@ -24,7 +23,9 @@
 
     <div class="panel panel--best">
       <div class="panel__header">
-        <span class="panel__badge panel__badge--best">&#10003; Best practice</span>
+        <span class="panel__badge panel__badge--best">
+          &#10003; {{ 'sections.getterVsSignal.panels.best' | translate }}
+        </span>
         <span class="panel__lang">TypeScript</span>
       </div>
       <pre class="code-block" [innerHTML]="codeBest"></pre>
@@ -33,36 +34,54 @@
 
   <div class="demo-box">
     <div class="demo-box__header">
-      <span class="demo-label">Live demo</span>
+      <span class="demo-label">{{ 'sections.getterVsSignal.demo.label' | translate }}</span>
       <div class="demo-actions">
-        <button class="btn btn--outline" (click)="toggleFilterTag()">Toggle "filter" tag</button>
-        <button class="btn btn--primary" (click)="triggerChangeDetection()">
-          Trigger change detection
+        <button class="btn btn--outline" (click)="toggleFilterTag()">
+          {{ 'sections.getterVsSignal.demo.toggleFilterTag' | translate }}
         </button>
-        <button class="btn btn--ghost" (click)="clearConsole()">Clear</button>
+        <button class="btn btn--primary" (click)="triggerChangeDetection()">
+          {{ 'sections.getterVsSignal.demo.triggerChangeDetection' | translate }}
+        </button>
+        <button class="btn btn--ghost" (click)="clearConsole()">
+          {{ 'sections.getterVsSignal.demo.clear' | translate }}
+        </button>
       </div>
     </div>
 
     <div class="demo-stats">
       <div class="stat-card">
-        <span class="stat-card__label">CD triggers</span>
+        <span class="stat-card__label">
+          {{ 'sections.getterVsSignal.demo.stats.cdTriggers' | translate }}
+        </span>
         <span class="stat-card__value stat-card__value--neutral">{{ cdTriggerCount() }}</span>
       </div>
       <div class="stat-card">
-        <span class="stat-card__label">Getter call count</span>
+        <span class="stat-card__label">
+          {{ 'sections.getterVsSignal.demo.stats.getterCallCount' | translate }}
+        </span>
         <span class="stat-card__value stat-card__value--anti">{{ getterCallCount() }}</span>
       </div>
       <div class="stat-card">
-        <span class="stat-card__label">Computed re-evaluations</span>
+        <span class="stat-card__label">
+          {{ 'sections.getterVsSignal.demo.stats.computedReevaluations' | translate }}
+        </span>
         <span class="stat-card__value stat-card__value--best">{{ computedRevalCount() }}</span>
       </div>
       <div class="stat-card">
-        <span class="stat-card__label">Getter result</span>
-        <span class="stat-card__value stat-card__value--neutral">{{ hasFilterTagGetter }}</span>
+        <span class="stat-card__label">
+          {{ 'sections.getterVsSignal.demo.stats.getterResult' | translate }}
+        </span>
+        <span class="stat-card__value stat-card__value--neutral">
+          {{ booleanKey(hasFilterTagGetter) | translate }}
+        </span>
       </div>
       <div class="stat-card">
-        <span class="stat-card__label">Computed result</span>
-        <span class="stat-card__value stat-card__value--neutral">{{ hasFilterTagComputed() }}</span>
+        <span class="stat-card__label">
+          {{ 'sections.getterVsSignal.demo.stats.computedResult' | translate }}
+        </span>
+        <span class="stat-card__value stat-card__value--neutral">
+          {{ booleanKey(hasFilterTagComputed()) | translate }}
+        </span>
       </div>
     </div>
 
@@ -71,12 +90,14 @@
         <span class="fake-console__dot"></span>
         <span class="fake-console__dot"></span>
         <span class="fake-console__dot"></span>
-        <span class="fake-console__title">Console output</span>
+        <span class="fake-console__title">
+          {{ 'sections.getterVsSignal.demo.consoleTitle' | translate }}
+        </span>
       </div>
       <div class="fake-console__body">
         @if (consoleEntries().length === 0) {
           <p class="fake-console__empty">
-            Click "Trigger change detection" to see the difference...
+            {{ 'sections.getterVsSignal.demo.consoleEmpty' | translate }}
           </p>
         }
         @for (entry of consoleEntries(); track $index) {
@@ -85,18 +106,17 @@
             [class.log-line--anti]="entry.type === 'anti'"
             [class.log-line--best]="entry.type === 'best'"
           >
-            <span class="log-line__prefix">{{
-              entry.type === 'anti' ? '&#9679;' : '&#9675;'
-            }}</span>
-            {{ entry.message }}
+            @if (entry.type === 'anti') {
+              <span class="log-line__prefix">&#9679;</span>
+            } @else {
+              <span class="log-line__prefix">&#9675;</span>
+            }
+            {{ entry.translationKey | translate }} {{ booleanKey(entry.result) | translate }}
           </div>
         }
       </div>
     </div>
 
-    <p class="demo-tip">
-      Each CD trigger increments the getter call count. The computed re-evaluation count only
-      increases when you "Toggle filter tag" — regardless of how many CD cycles occurred.
-    </p>
+    <p class="demo-tip" [innerHTML]="'sections.getterVsSignal.demo.tip' | translate"></p>
   </div>
 </section>

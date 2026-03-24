@@ -1,14 +1,14 @@
 import { Component, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section-on-push',
   standalone: true,
-  imports: [],
+  imports: [TranslatePipe],
   templateUrl: './on-push.component.html',
   styleUrl: './on-push.component.scss',
 })
 export class OnPushComponent {
-
   protected defaultRenders = signal(0);
   protected onPushRenders = signal(0);
   protected signalVersion = signal(0);
@@ -17,16 +17,16 @@ export class OnPushComponent {
   // setTimeout callbacks, HTTP responses, DOM events on parent components, etc.
   protected triggerCD(): void {
     // Default strategy: re-checks on every CD cycle regardless of changed inputs.
-    this.defaultRenders.update(n => n + 1);
+    this.defaultRenders.update((n) => n + 1);
     // OnPush: skips re-checking — no @Input reference changed, no signal emitted.
   }
 
   // Simulates mutating a Signal or changing an @Input reference.
   protected changeSignal(): void {
-    this.signalVersion.update(n => n + 1);
+    this.signalVersion.update((n) => n + 1);
     // Both strategies re-render here: the signal change marks the view dirty.
-    this.defaultRenders.update(n => n + 1);
-    this.onPushRenders.update(n => n + 1);
+    this.defaultRenders.update((n) => n + 1);
+    this.onPushRenders.update((n) => n + 1);
   }
 
   protected resetDemo(): void {

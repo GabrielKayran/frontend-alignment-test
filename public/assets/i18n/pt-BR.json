@@ -1,0 +1,294 @@
+{
+  "common": {
+    "boolean": {
+      "true": "verdadeiro",
+      "false": "falso"
+    }
+  },
+  "layout": {
+    "language": {
+      "label": "Idioma",
+      "ariaLabel": "Seletor de idioma",
+      "english": "Inglês",
+      "portuguese": "Português"
+    },
+    "sidebar": {
+      "navigationAriaLabel": "Navegação por seções",
+      "title": "Padrões de<br />Performance",
+      "description": "Anti-patterns e boas práticas para aplicações Angular modernas.",
+      "techStack": "Zone.js - Signals - RxJS 7",
+      "creditPrefix": "desenvolvido por"
+    }
+  },
+  "sections": {
+    "getterVsSignal": {
+      "title": "Getter vs Signal",
+      "navSubtitle": "Custo da detecção de mudanças",
+      "tag": "Computed",
+      "description": "Um getter de classe é reavaliado em <strong>todo ciclo de change detection</strong>, independentemente de suas dependências terem mudado. Um signal com <code>computed()</code> memoriza o resultado e só recalcula quando uma dependência rastreada realmente muda.",
+      "panels": {
+        "anti": "Anti-pattern",
+        "best": "Boa prática"
+      },
+      "demo": {
+        "label": "Demo ao vivo",
+        "toggleFilterTag": "Alternar tag \"filter\"",
+        "triggerChangeDetection": "Disparar change detection",
+        "clear": "Limpar",
+        "stats": {
+          "cdTriggers": "Disparos de CD",
+          "getterCallCount": "Chamadas do getter",
+          "computedReevaluations": "Reavaliações do computed",
+          "getterResult": "Resultado do getter",
+          "computedResult": "Resultado do computed"
+        },
+        "consoleTitle": "Saída do console",
+        "consoleEmpty": "Clique em \"Disparar change detection\" para ver a diferença...",
+        "tip": "Cada disparo de CD incrementa a contagem do getter. A contagem de reavaliações do computed só aumenta quando você alterna a tag \"filter\" - independentemente de quantos ciclos de CD aconteceram.",
+        "logs": {
+          "getterPrefix": "[GETTER] ciclo de CD -> reavaliado ->",
+          "computedPrefix": "[COMPUTED] filterTags mudou -> reavaliado ->"
+        }
+      }
+    },
+    "lazyLoading": {
+      "title": "Lazy Loading",
+      "navSubtitle": "Estratégia de bundle",
+      "tag": "Tamanho do bundle",
+      "description": "<code>loadChildren</code> com NgModules exige enviar um grafo inteiro de módulo por rota. <code>loadComponent</code> com componentes standalone produz um chunk mínimo e direcionado contendo apenas aquele componente e seus imports diretos - nada além disso.",
+      "panels": {
+        "anti": "Anti-pattern - NgModule",
+        "best": "Boa prática - Standalone"
+      },
+      "insight": {
+        "title": "Por que isso importa",
+        "description": "Um chunk de NgModule inclui todos os componentes declarados naquele módulo, mesmo quando a rota não usa a maioria deles. O lazy-loading com standalone permite que o bundler aplique tree-shaking no nível do componente - o chunk contém apenas o que foi importado diretamente por <code>DashboardComponent</code>. Economia típica: <span class='highlight'>20 - 60 KB</span> por rota em módulos de porte médio."
+      }
+    },
+    "signalReadonly": {
+      "title": "Encapsulamento de Signal",
+      "navSubtitle": "Writable vs Readonly",
+      "tag": "Encapsulamento",
+      "description": "Expor um <code>WritableSignal</code> publicamente quebra o encapsulamento - qualquer consumidor pode mutar o estado que deveria ser controlado pelo serviço. Use <code>.asReadonly()</code> para expor apenas uma projeção de leitura e manter os métodos de mutação privados no serviço.",
+      "panels": {
+        "anti": "Anti-pattern",
+        "best": "Boa prática"
+      },
+      "insight": {
+        "title": "Regra prática",
+        "description": "<code>_signal = signal()</code> privado dentro do serviço -> <code>signal = this._signal.asReadonly()</code> público para os consumidores. É o mesmo princípio de um setter privado com getter público na OOP tradicional, mas aplicado no nível de tipos pela API de signals do Angular."
+      }
+    },
+    "serviceScope": {
+      "title": "Escopo de Serviço",
+      "navSubtitle": "Root vs nível de componente",
+      "tag": "DI",
+      "description": "<code>providedIn: 'root'</code> cria um singleton que vive durante todo o ciclo da aplicação. Para estado efêmero - como um wizard em múltiplas etapas - use providers no nível do componente para que o serviço seja criado do zero no mount e coletado pelo garbage collector quando o componente for destruído.",
+      "panels": {
+        "anti": "Anti-pattern - singleton global",
+        "best": "Boa prática - escopo no componente"
+      },
+      "insight": {
+        "title": "Alinhamento com o ciclo de vida",
+        "description": "Providers com escopo de componente ficam vinculados ao ciclo de destruição do componente. Isso elimina lógica manual de reset, evita estado antigo entre sessões do wizard e garante recuperação automática de memória - o Angular cuida disso para você. Todos os componentes filhos do wizard também recebem a mesma instância escopada."
+      }
+    },
+    "inputDebounce": {
+      "title": "Debounce de Input",
+      "navSubtitle": "Operadores RxJS",
+      "tag": "RxJS",
+      "description": "Sem <code>debounceTime</code>, cada tecla dispara uma requisição de rede. Com <code>debounceTime(300) + distinctUntilChanged()</code>, as requisições só disparam quando o usuário pausa - e apenas quando o valor realmente mudou.",
+      "panels": {
+        "anti": "Anti-pattern",
+        "best": "Boa prática"
+      },
+      "demo": {
+        "label": "Demo ao vivo - digite algo",
+        "reset": "Resetar",
+        "placeholder": "Buscar usuários...",
+        "stats": {
+          "withoutDebounce": "X Sem debounce - chamadas de API disparadas",
+          "withDebounce": "OK Com debounce - chamadas de API disparadas"
+        },
+        "logKinds": {
+          "immediate": "IMEDIATO",
+          "debounced": "COM DEBOUNCE"
+        },
+        "empty": "Comece a digitar para ver as requisições registradas aqui..."
+      }
+    },
+    "trackFor": {
+      "title": "track no @for",
+      "navSubtitle": "Reconciliação do DOM",
+      "tag": "Performance",
+      "description": "Sem uma expressão <code>track</code> adequada, o Angular não consegue identificar quais itens mudaram e reprocessa <strong>todas as N views</strong> em cada mutação da lista. Com <code>track item.id</code>, apenas itens realmente novos ou atualizados geram mutações no DOM.",
+      "panels": {
+        "anti": "track $index",
+        "best": "track item.id"
+      },
+      "demo": {
+        "label": "Demo ao vivo - acompanhe o contador de reprocessamento",
+        "reset": "Resetar",
+        "domViewsProcessed": "Views do DOM processadas",
+        "reprocessedTitle": "vezes reprocessado",
+        "tip": "<strong>xN</strong> mostra quantas vezes cada view foi reprocessada pelo Angular. No lado com <em>track $index</em>, todos os itens incrementam em toda operação - até os que não mudaram. No lado com <em>track item.id</em>, apenas o item novo começa em x1; os itens existentes continuam intactos.",
+        "bad": {
+          "label": "track $index",
+          "prepend": "+ Inserir no início",
+          "shuffle": "Embaralhar"
+        },
+        "good": {
+          "label": "track item.id",
+          "prepend": "+ Inserir no início",
+          "shuffle": "Embaralhar"
+        },
+        "items": {
+          "designTokens": "Design tokens",
+          "authMiddleware": "Middleware de autenticação",
+          "apiRateLimiting": "Rate limiting da API",
+          "unitTestCoverage": "Cobertura de testes unitários",
+          "dockerSetup": "Configuração do Docker",
+          "generatedTask": "Tarefa #{{id}}"
+        }
+      },
+      "insight": {
+        "title": "Quando track $index é aceitável",
+        "description": "Se a lista tiver <strong>ordem estável</strong> (nunca reordenada, itens apenas adicionados no final, nunca removidos do meio) e os itens não carregarem estado interno de DOM (inputs, animações), <code>$index</code> é aceitável. Em qualquer outro cenário - shuffle, prepend, remoção arbitrária, paginação - prefira <code>track item.id</code> ou outra propriedade de identidade estável."
+      }
+    },
+    "observableCleanup": {
+      "title": "Limpeza de Observable",
+      "navSubtitle": "Gerenciamento de subscriptions",
+      "tag": "RxJS",
+      "description": "Subscriptions que vivem mais do que seu componente causam vazamentos de memória e handlers fantasmas. O Angular 16+ traz <code>takeUntilDestroyed()</code> como solução canônica - sem Subject de boilerplate e sem precisar de <code>ngOnDestroy</code>.",
+      "panels": {
+        "anti": "Unsubscribe manual",
+        "antiNote": "Verboso. Fácil de esquecer quando existem várias subscriptions.",
+        "middle": "Padrão takeUntil",
+        "middleNote": "Melhor - mas ainda exige um Subject e um hook completo de ngOnDestroy.",
+        "best": "takeUntilDestroyed",
+        "bestNote": "Zero boilerplate. Funciona em construtores e no contexto de inject(). Angular 16+."
+      },
+      "insight": {
+        "title": "Principal vantagem do takeUntilDestroyed",
+        "description": "Quando chamado dentro do construtor (ou de qualquer função no contexto de inject), ele se vincula automaticamente ao <code>DestroyRef</code> do componente atual sem exigir passagem explícita. Você também pode passar um <code>destroyRef</code> de forma explícita ao chamar fora do contexto de inject - por exemplo, em um método de serviço standalone."
+      },
+      "warning": {
+        "title": "Requisições do HttpClient não precisam de cleanup",
+        "description": "Observables retornados pelo <code>HttpClient</code> são finitos - eles emitem uma única resposta e depois completam automaticamente, liberando os recursos sem vazamentos de memória. Aplicar <code>takeUntilDestroyed</code> neles é inofensivo, mas desnecessário. Reserve o cleanup para streams de longa duração: <code>interval()</code>, <code>fromEvent()</code>, conexões WebSocket e <code>Subject</code>s gerenciados manualmente."
+      }
+    },
+    "sharedModulePattern": {
+      "title": "Anti-pattern de SharedModule",
+      "navSubtitle": "Abordagem standalone moderna",
+      "tag": "Arquitetura",
+      "description": "O padrão <code>SharedModule</code> foi uma solução pragmática no mundo dos NgModules - declarar uma vez, exportar em todo lugar. Com componentes standalone ele vira um passivo: força cada consumidor a carregar componentes que nunca usa, infla o tamanho dos chunks e cria acoplamento invisível por meio de reexports implícitos.",
+      "panels": {
+        "anti": "SharedModule",
+        "best": "Imports standalone diretos"
+      },
+      "insights": {
+        "anti": {
+          "title": "Problemas do SharedModule",
+          "items": {
+            "item1": "Todos os componentes declarados entram no bundle de cada consumidor",
+            "item2": "Dependência implícita - difícil saber o que um módulo realmente precisa",
+            "item3": "Ponto único de acoplamento - mexer no SharedModule arrisca regressões em todo lugar",
+            "item4": "Impede tree-shaking eficiente pelo bundler"
+          }
+        },
+        "best": {
+          "title": "Benefícios do standalone",
+          "items": {
+            "item1": "Cada componente declara exatamente o que precisa - nada além disso",
+            "item2": "O bundler pode fazer tree-shaking no nível do componente",
+            "item3": "As dependências ficam explícitas e colocalizadas com o componente",
+            "item4": "Chunks menores, lazy loading mais rápido e refatoração mais simples"
+          }
+        }
+      }
+    },
+    "deferBlocks": {
+      "title": "Blocos @defer",
+      "navSubtitle": "Lazy loading no template",
+      "tag": "Angular 17+",
+      "description": "Componentes carregados de forma ansiosa inflacionam o bundle inicial mesmo quando o usuário nunca chega até eles. <code>@defer</code> faz <strong>code-splitting automático</strong> para o componente adiado - sem configuração de bundler, sem <code>loadComponent</code>, apenas com uma declaração no template.",
+      "panels": {
+        "anti": "Carregamento ansioso",
+        "best": "@defer com blocos auxiliares",
+        "triggers": "Todos os gatilhos disponíveis"
+      },
+      "insight": {
+        "title": "Code-splitting automático",
+        "description": "A Angular CLI detecta componentes dentro de <code>@defer</code> e os move automaticamente para chunks separados em tempo de build. Nenhuma configuração extra é necessária - é o mesmo mecanismo usado por <code>loadComponent</code> em rotas, mas aplicado a qualquer parte do template. O bloco <code>@placeholder</code> renderiza imediatamente; o conteúdo principal só é baixado e renderizado quando o gatilho dispara."
+      },
+      "warning": {
+        "title": "Quando não usar @defer",
+        "description": "Componentes acima da dobra, críticos para LCP (Largest Contentful Paint), ou que exigem hidratação SSR imediata <strong>não devem ser adiados</strong>. Reserve <code>@defer</code> para conteúdo secundário: gráficos, editores rich-text, data grids, abas inativas e qualquer coisa abaixo da primeira área visível da tela."
+      }
+    },
+    "onPush": {
+      "title": "Change Detection com OnPush",
+      "navSubtitle": "Estratégia de change detection",
+      "tag": "Performance",
+      "description": "Com a estratégia padrão (<code>Default</code>), o Angular verifica o template de <strong>todo componente</strong> em cada ciclo de change detection - mesmo quando nada relevante mudou. <code>OnPush</code> coloca o componente em repouso: ele só é rechecado quando uma referência de <code>@Input</code> muda, um Signal emite ou o pipe <code>async</code> recebe um novo valor.",
+      "panels": {
+        "anti": "ChangeDetectionStrategy.Default",
+        "best": "ChangeDetectionStrategy.OnPush"
+      },
+      "demo": {
+        "label": "Demo ao vivo - observe quando cada estratégia renderiza novamente",
+        "triggerExternalCd": "Disparar CD externo",
+        "changeSignal": "Mudar Signal / @Input",
+        "reset": "Resetar",
+        "stats": {
+          "defaultRenders": "Default - renderizações",
+          "onPushRenders": "OnPush - renderizações",
+          "signalVersion": "Versão do signal"
+        },
+        "legend": {
+          "externalCd": "<strong>Disparar CD externo</strong> - simula setTimeout, resposta HTTP ou evento no componente pai. Default renderiza de novo. OnPush <em>não renderiza novamente</em>.",
+          "signalChange": "<strong>Mudar Signal / @Input</strong> - as duas estratégias renderizam de novo, porque o Angular sabe que o estado relevante mudou."
+        },
+        "tip": "Clique em <strong>Disparar CD externo</strong> várias vezes e perceba que o contador do OnPush permanece em zero - o componente literalmente pula todas as verificações de binding."
+      },
+      "insight": {
+        "title": "OnPush + Signals = combinação ideal",
+        "description": "Com Signals, o Angular sabe exatamente <em>qual</em> nó do template mudou e atualiza apenas esse nó do DOM, sem percorrer toda a árvore de componentes. Declarar <code>OnPush</code> formaliza isso na estratégia de CD do componente, eliminando verificações desnecessárias mesmo em apps com Zone.js. Em componentes construídos exclusivamente com Signals, o Angular pode até pular CD por completo no futuro (Arquitetura Zoneless - Angular 18+)."
+      }
+    },
+    "formsStrategy": {
+      "title": "Estratégia de Forms",
+      "navSubtitle": "Boas práticas (bônus)",
+      "tag": "Bônus",
+      "description": "Use <strong>Reactive Forms</strong> para formulários complexos, dinâmicos ou com validação programática - a validação fica no TypeScript, é fácil de testar e compõe bem. Use <strong>Template-driven</strong> (<code>ngModel</code>) apenas para inputs simples e isolados, quando não houver validação entre campos nem geração dinâmica de controles.",
+      "panels": {
+        "anti": "Template-driven em formulários complexos",
+        "best": "Formulário reativo"
+      },
+      "demo": {
+        "label": "Formulário reativo ao vivo",
+        "success": "Formulário enviado com sucesso - validação aprovada.",
+        "submit": "Enviar",
+        "fields": {
+          "email": {
+            "label": "E-mail",
+            "placeholder": "voce@exemplo.com",
+            "errors": {
+              "required": "E-mail é obrigatório.",
+              "invalid": "Digite um endereço de e-mail válido."
+            }
+          },
+          "username": {
+            "label": "Usuário",
+            "placeholder": "mín. 3 caracteres",
+            "errors": {
+              "required": "Usuário é obrigatório.",
+              "minLength": "O usuário deve ter pelo menos 3 caracteres."
+            }
+          }
+        }
+      }
+    }
+  }
+}
