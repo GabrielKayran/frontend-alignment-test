@@ -1,58 +1,156 @@
-# FrontendAlignmentTest
+# Frontend Alignment Test
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+Interactive Angular 21 showcase created to support a technical discussion about frontend best practices with the China hub. The project turns common Angular decisions into side-by-side comparisons between anti-patterns and recommended approaches, with demos that make the impact visible in real time.
 
-## Development server
+The showcase was assembled with support from Arthur Maia and focuses on topics that are relevant to modern Angular applications, especially performance, rendering behavior, state boundaries, and maintainability.
 
-To start a local development server, run:
+## Why this project exists
 
-```bash
-ng serve
+Instead of discussing best practices only at a conceptual level, this project was built to provide a concrete environment for the conversation. Each section highlights a specific frontend concern and shows how small implementation choices affect bundle size, change detection, DOM work, service lifetime, and reactive flows.
+
+This is not a starter kit or a design system. It is a learning and alignment tool.
+
+## What the showcase covers
+
+The current version includes 11 sections:
+
+1. `Getter vs Signal`
+   Class getter re-evaluation on every change detection cycle versus `computed()` memoization.
+2. `Lazy Loading`
+   `loadChildren` with NgModules versus `loadComponent` with standalone components.
+3. `Signal Encapsulation`
+   Exposing `WritableSignal` directly versus `asReadonly()` and controlled mutations.
+4. `Service Scope`
+   Global singleton services versus component-scoped providers for ephemeral state.
+5. `Input Debounce`
+   Firing work on every keystroke versus `debounceTime()` and `distinctUntilChanged()`.
+6. `track` in `@for`
+   Tracking by `$index` versus stable identity with `item.id`.
+7. `Observable Cleanup`
+   Manual cleanup versus `takeUntilDestroyed()`.
+8. `SharedModule Anti-pattern`
+   Large shared module re-exports versus explicit standalone imports.
+9. `@defer` Blocks
+   Eager rendering versus declarative lazy template loading.
+10. `OnPush Change Detection`
+    Default strategy versus `ChangeDetectionStrategy.OnPush`.
+11. `Forms Strategy`
+    When reactive forms are a better fit than template-driven forms.
+
+## Architecture highlights
+
+- Angular 21 with standalone components across the app.
+- Route-level lazy loading through `loadComponent`.
+- SSR support with prerendering and an Express server entrypoint.
+- Client hydration with event replay.
+- `@ngx-translate` based internationalization with `en.US` and `pt-BR`.
+- Interactive examples structured as isolated sections under a single showcase page.
+- Vitest-based test execution through `ng test`.
+
+## Tech stack
+
+- Angular 21
+- TypeScript 5.9
+- RxJS 7
+- Angular SSR
+- Express
+- `@ngx-translate/core`
+- Vitest
+
+## Project structure
+
+```text
+src/
+  app/
+    i18n/
+      language.service.ts
+    performance-showcase/
+      sections/
+        defer-blocks/
+        forms-strategy/
+        getter-vs-signal/
+        input-debounce/
+        lazy-loading/
+        observable-cleanup/
+        on-push/
+        service-scope/
+        shared-module-pattern/
+        signal-readonly/
+        track-for/
+    shared/
+      language-switcher/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Getting started
 
-## Code scaffolding
+### Prerequisites
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Node.js
+- npm
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Install dependencies
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+### Start the development server
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Open `http://localhost:4200/`.
 
-## Running unit tests
+## Available scripts
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### `npm start`
+
+Starts the local development server with live reload.
+
+### `npm run build`
+
+Builds the browser and server bundles in `dist/frontend-alignment-test/`.
+
+### `npm run watch`
+
+Builds the project in watch mode using the development configuration.
+
+### `npm test`
+
+Runs the test suite with Vitest through Angular CLI.
+
+### `npm run serve:ssr:frontend-alignment-test`
+
+Serves the generated SSR build from `dist/frontend-alignment-test/server/server.mjs`.
+
+Use it after a successful production build:
 
 ```bash
-ng test
+npm run build
+npm run serve:ssr:frontend-alignment-test
 ```
 
-## Running end-to-end tests
+## Internationalization
 
-For end-to-end (e2e) testing, run:
+Translations live under `public/assets/i18n/`:
 
-```bash
-ng e2e
-```
+- `en.US.json`
+- `pt-BR.json`
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Language selection is handled by `LanguageService`, which:
+
+- registers supported languages
+- restores the stored browser preference
+- updates the document `lang` attribute
+- persists changes in local storage on the client
+
+## Notes for contributors
+
+- Keep each showcase section focused on one decision or tradeoff.
+- Prefer interactive demonstrations over static explanation when possible.
+- If you add a new section, make the anti-pattern and the recommended approach equally clear.
+- Reuse the existing section layout so the comparison remains consistent across the page.
 
 ## Additional Resources
 
