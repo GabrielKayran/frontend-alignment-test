@@ -66,9 +66,11 @@ app-root {
 // --- Section structure -------------------------------------------------------
 
 .section {
+  width: min(100%, 1100px);
   max-width: 1100px;
   margin: 0 auto 96px;
   scroll-margin-top: 32px;
+  min-width: 0;
 
   &:last-child {
     margin-bottom: 0;
@@ -158,6 +160,7 @@ app-root {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 20px;
+  min-width: 0;
 
   &--three {
     grid-template-columns: 1fr 1fr 1fr;
@@ -170,6 +173,7 @@ app-root {
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
+  min-width: 0;
 
   &--anti {
     border-color: var(--anti-border);
@@ -238,6 +242,7 @@ app-root {
   padding: 16px;
   background: rgba(0, 0, 0, 0.35);
   overflow-x: auto;
+  max-width: 100%;
   color: var(--text-2);
   tab-size: 2;
   flex: 1;
@@ -509,6 +514,7 @@ app-root {
   border: 1px solid rgba(34, 211, 238, 0.15);
   border-radius: var(--radius);
   padding: 18px 20px;
+  min-width: 0;
 
   strong {
     display: block;
@@ -764,6 +770,9 @@ app-root {
   }
   .panel-grid {
     grid-template-columns: 1fr;
+  }
+  .insight-box {
+    flex-direction: column;
   }
 }
 
