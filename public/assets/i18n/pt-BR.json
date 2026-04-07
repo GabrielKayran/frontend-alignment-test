@@ -257,6 +257,270 @@
         "description": "Com Signals, o Angular sabe exatamente <em>qual</em> nó do template mudou e atualiza apenas esse nó do DOM, sem percorrer toda a árvore de componentes. Declarar <code>OnPush</code> formaliza isso na estratégia de CD do componente, eliminando verificações desnecessárias mesmo em apps com Zone.js. Em componentes construídos exclusivamente com Signals, o Angular pode até pular CD por completo no futuro (Arquitetura Zoneless - Angular 18+)."
       }
     },
+    "ngOptimizedImage": {
+      "title": "NgOptimizedImage",
+      "navSubtitle": "LCP e lazy loading",
+      "tag": "Performance",
+      "description": "Uma <code>&lt;img src&gt;</code> simples não tem lazy loading, não informa dimensões intrínsecas e não define prioridade de fetch — tudo isso prejudica o <strong>LCP</strong> e causa layout shift. A diretiva <code>NgOptimizedImage</code> corrige os três automaticamente.",
+      "panels": {
+        "anti": "Tag img simples",
+        "best": "Diretiva NgOptimizedImage"
+      },
+      "demo": {
+        "label": "Demo ao vivo — inspecione os atributos em DevTools → Elements",
+        "plainLabel": "&lt;img&gt; simples",
+        "optimizedLabel": "NgOptimizedImage",
+        "tip": "Abra DevTools → Elements e compare os dois lados. As imagens simples não têm <code>loading</code>, <code>width/height</code> nem <code>fetchpriority</code>. As otimizadas têm <code>loading=\"lazy\"</code> nas abaixo do fold e <code>fetchpriority=\"high\"</code> na marcada como priority (evita layout shift e melhora o LCP)."
+      }
+    },
+    "virtualScroll": {
+      "title": "Virtual Scroll",
+      "navSubtitle": "Listas grandes",
+      "tag": "Performance",
+      "description": "Renderizar milhares de itens no DOM de uma vez causa thrashing de layout e alto consumo de memória. O <code>cdk-virtual-scroll-viewport</code> do CDK mantém apenas as linhas visíveis no DOM — o tamanho da lista não afeta mais a performance.",
+      "panels": {
+        "anti": "Todos os itens no DOM",
+        "best": "CDK Virtual Scroll"
+      },
+      "demo": {
+        "label": "Demo ao vivo — role as duas listas e compare",
+        "antiLabel": "todos os itens renderizados",
+        "bestLabel": "1 000 itens",
+        "inDom": "no DOM",
+        "tip": "Abra DevTools → Elements e conte as linhas em cada lado. A esquerda renderiza 200 nós imediatamente (com 1 000 o browser travaria). O CDK renderiza apenas ~10 nós DOM independentemente do tamanho — vá ao item #1 000 instantaneamente sem custo de performance."
+      }
+    },
+    "purePipe": {
+      "title": "Pure Pipe",
+      "navSubtitle": "Transformações memoizadas",
+      "tag": "Performance",
+      "description": "Chamar um método diretamente em uma expressão de template o re-executa em <strong>todo ciclo de change detection</strong>. Um pipe com <code>pure: true</code> é memoizado pelo Angular — só é reexecutado quando a referência do input muda.",
+      "panels": {
+        "anti": "Chamada de método no template",
+        "best": "Pure pipe"
+      },
+      "demo": {
+        "label": "Demo ao vivo — observe os contadores de chamadas",
+        "triggerCD": "Disparar CD",
+        "changePrice": "Alterar preço",
+        "reset": "Resetar",
+        "stats": {
+          "cdTriggers": "Ciclos de CD",
+          "methodCalls": "Chamadas ao método",
+          "pipeCalls": "Chamadas ao pipe"
+        },
+        "antiLabel": "chamada de método",
+        "bestLabel": "pure pipe",
+        "tip": "Pressione <strong>Disparar CD</strong>: o método é chamado 5 vezes (uma por produto por ciclo) enquanto o pipe fica em zero — os preços não mudaram, o Angular pula a re-avaliação. Pressione <strong>Alterar preço</strong>: apenas 1 nova chamada ao pipe (o item alterado). O método sempre dispara 5 vezes."
+      }
+    },
+    "toSignal": {
+      "title": "toSignal()",
+      "navSubtitle": "Observable → Signal",
+      "tag": "Signals",
+      "description": "<code>toSignal()</code> converte qualquer Observable em um Signal legível. Ele faz subscribe automaticamente no contexto de injeção e cancela quando o componente é destruído — eliminando o boilerplate de subscription manual.",
+      "panels": {
+        "anti": "subscribe() manual",
+        "best": "toSignal()"
+      }
+    },
+    "effectVsComputed": {
+      "title": "effect() vs computed()",
+      "navSubtitle": "Signals — ferramenta certa",
+      "tag": "Signals",
+      "description": "Use <code>computed()</code> para derivar valores de signals — é síncrono, memoizado e rastreado. Use <code>effect()</code> apenas para efeitos colaterais como logging, analytics ou manipulação do DOM. Escrever em um signal dentro de <code>effect()</code> para computar um valor é um anti-pattern.",
+      "panels": {
+        "anti": "effect() para derivar estado",
+        "best": "computed() + effect() para efeitos colaterais"
+      },
+      "demo": {
+        "label": "Demo ao vivo — observe a ordem de avaliação",
+        "changeFirstName": "Mudar primeiro nome",
+        "changeLastName": "Mudar sobrenome",
+        "clear": "Limpar",
+        "stats": {
+          "renders": "Renderizações",
+          "effectRuns": "Execuções do effect",
+          "computedEvals": "Avaliações do computed"
+        },
+        "effectNote": "Atualizado de forma assíncrona após o render — causa um ciclo de render extra",
+        "computedNote": "Derivado de forma síncrona no mesmo render — zero ciclos extras",
+        "consoleTitle": "Log de avaliação",
+        "consoleEmpty": "Mude um nome para observar a ordem de avaliação...",
+        "tip": "Cada mudança de nome: o <code>computed()</code> avalia uma vez, de forma síncrona, durante o render. O <code>effect()</code> executa <em>depois</em> do render e escreve em outro signal — fazendo o Angular agendar um segundo render. Observe o contador de <strong>Renderizações</strong> crescer ~2x mais rápido que o de <strong>Avaliações do computed</strong>."
+      }
+    },
+    "linkedSignal": {
+      "title": "linkedSignal()",
+      "navSubtitle": "Signal derivado e gravável",
+      "tag": "Signals",
+      "description": "<code>linkedSignal()</code> cria um signal que deriva seu valor padrão de outro signal, mas permanece gravável. Quando a fonte muda, ele reseta para o novo valor derivado — eliminando o padrão verboso de signal separado mais um <code>effect()</code> para sincronizá-los.",
+      "panels": {
+        "anti": "Signal + effect() para sincronizar",
+        "best": "linkedSignal()"
+      }
+    },
+    "signalInput": {
+      "title": "Signal Input",
+      "navSubtitle": "@Input reativo",
+      "tag": "Signals",
+      "description": "O decorator <code>@Input()</code> não é reativo — você precisa de <code>ngOnChanges</code> para reagir a mudanças. A função <code>input()</code> retorna um signal, tornando o input diretamente combinável com <code>computed()</code> e <code>effect()</code> sem nenhum hook de ciclo de vida.",
+      "panels": {
+        "anti": "Decorator @Input()",
+        "best": "Função signal input()"
+      }
+    },
+    "facadePattern": {
+      "title": "Padrão Facade",
+      "navSubtitle": "API de serviço simplificada",
+      "tag": "Arquitetura",
+      "description": "Um componente que injeta múltiplos serviços não relacionados fica fortemente acoplado a todos eles. Um serviço <strong>Facade</strong> agrega e orquestra esses serviços internamente — o componente depende de uma única API estável.",
+      "panels": {
+        "anti": "Múltiplos serviços injetados",
+        "best": "Injeção de um único facade"
+      }
+    },
+    "smartDumb": {
+      "title": "Componentes Smart / Dumb",
+      "navSubtitle": "Container vs apresentação",
+      "tag": "Arquitetura",
+      "description": "Componentes <strong>Smart</strong> (container) buscam dados e gerenciam estado. Componentes <strong>Dumb</strong> (apresentação) recebem dados via <code>input()</code> e emitem eventos via <code>output()</code> — são sem estado, facilmente testáveis e reutilizáveis.",
+      "panels": {
+        "anti": "Componente dumb busca seus próprios dados",
+        "best": "Smart busca, dumb renderiza"
+      }
+    },
+    "injectionToken": {
+      "title": "InjectionToken",
+      "navSubtitle": "Configuração testável",
+      "tag": "Arquitetura",
+      "description": "Usar <code>environment.apiUrl</code> diretamente em um serviço cria uma dependência impossível de testar e trocar. Um <code>InjectionToken</code> torna o valor parte do grafo de DI do Angular — facilmente substituível em testes e configurações por ambiente.",
+      "panels": {
+        "anti": "Referência hardcoded ao environment",
+        "best": "InjectionToken"
+      }
+    },
+    "folderStructure": {
+      "title": "Estrutura de Pastas",
+      "navSubtitle": "Feature vs tipo",
+      "tag": "Arquitetura",
+      "description": "Organizar por <strong>tipo</strong> (<code>components/</code>, <code>services/</code>, <code>pipes/</code>) mistura features não relacionadas e dificulta o raciocínio e a remoção de uma feature. Organizar por <strong>feature</strong> mantém tudo coeso — cada pasta é autocontida e removível de forma independente.",
+      "panels": {
+        "anti": "Estrutura por tipo",
+        "best": "Estrutura por feature"
+      }
+    },
+    "bypassSecurity": {
+      "title": "bypassSecurityTrust",
+      "navSubtitle": "Prevenção de XSS",
+      "tag": "Segurança",
+      "description": "Chamar <code>bypassSecurityTrustHtml(userInput)</code> desabilita o sanitizador XSS integrado do Angular. Use <code>[innerHTML]</code> diretamente para conteúdo fornecido pelo usuário — o Angular sanitiza automaticamente. Só contorne a sanitização para HTML que você gera e controla no servidor.",
+      "panels": {
+        "anti": "bypassSecurityTrustHtml(userInput)",
+        "best": "[innerHTML] com sanitização automática"
+      }
+    },
+    "httpOnlyCookie": {
+      "title": "Cookie HttpOnly",
+      "navSubtitle": "Segurança de armazenamento JWT",
+      "tag": "Segurança",
+      "description": "Armazenar um JWT no <code>localStorage</code> o torna acessível a qualquer JavaScript rodando na página — incluindo payloads XSS. Um cookie <strong>HttpOnly</strong> é completamente invisível ao JavaScript, eliminando o vetor de ataque de roubo de token mais comum.",
+      "panels": {
+        "anti": "localStorage.setItem('token', jwt)",
+        "best": "Set-Cookie: HttpOnly; Secure; SameSite=Strict"
+      }
+    },
+    "httpClientGenerics": {
+      "title": "HttpClient com Generics",
+      "navSubtitle": "Respostas HTTP tipadas",
+      "tag": "TypeScript",
+      "description": "Chamar <code>http.get()</code> sem parâmetro de tipo retorna <code>Observable&lt;Object&gt;</code> — toda segurança de tipos é perdida e os consumidores precisam fazer cast manual. Informar o generic <code>http.get&lt;User[]&gt;()</code> fornece IntelliSense completo, verificações em tempo de compilação e refatoração segura.",
+      "panels": {
+        "anti": "http.get() — sem tipos",
+        "best": "http.get<T>() — tipado"
+      }
+    },
+    "outputFn": {
+      "title": "Função output()",
+      "navSubtitle": "Emissor de eventos moderno",
+      "tag": "TypeScript",
+      "description": "O decorator <code>@Output()</code> com <code>EventEmitter</code> é a abordagem clássica, porém verbosa e baseada em classe. A função <code>output()</code> é o equivalente moderno — sem decorator, sem importar <code>EventEmitter</code>, e combina naturalmente com signal inputs.",
+      "panels": {
+        "anti": "@Output() EventEmitter",
+        "best": "Função output()"
+      }
+    },
+    "typeGuard": {
+      "title": "Type Guards",
+      "navSubtitle": "unknown no lugar de any",
+      "tag": "TypeScript",
+      "description": "Usar <code>any</code> silencia o compilador TypeScript completamente — o acesso a propriedades fica sem verificação e crashes em runtime passam despercebidos em tempo de compilação. <code>unknown</code> força o narrowing do tipo antes do uso, mantendo o sistema de tipos ativo e o código seguro.",
+      "panels": {
+        "anti": "function process(value: any)",
+        "best": "unknown + type guard narrowing"
+      }
+    },
+    "injectFn": {
+      "title": "Função inject()",
+      "navSubtitle": "DI moderno",
+      "tag": "DX",
+      "description": "A injeção via construtor exige listar todas as dependências como parâmetros — verboso e difícil de refatorar. A função <code>inject()</code> declara dependências como campos da classe, é mais legível e também funciona em funções standalone e helpers composáveis fora da classe.",
+      "panels": {
+        "anti": "Injeção via construtor",
+        "best": "inject() no nível de campo"
+      }
+    },
+    "routeInputBinding": {
+      "title": "Route Input Binding",
+      "navSubtitle": "withComponentInputBinding",
+      "tag": "DX",
+      "description": "Ler parâmetros de rota via <code>ActivatedRoute.snapshot</code> é imperativo e verboso. Com <code>withComponentInputBinding()</code> habilitado na config do roteador, o Angular vincula params de rota, query params e dados de resolve diretamente a signals <code>input()</code> — zero boilerplate.",
+      "panels": {
+        "anti": "ActivatedRoute.snapshot",
+        "best": "withComponentInputBinding() + input()"
+      }
+    },
+    "bootstrapApp": {
+      "title": "bootstrapApplication()",
+      "navSubtitle": "Sem NgModule",
+      "tag": "DX",
+      "description": "O <code>AppModule</code> clássico com <code>@NgModule({ bootstrap })</code> é boilerplate sem propósito em um app totalmente standalone. <code>bootstrapApplication()</code> inicializa o componente raiz diretamente com um array flat de providers — sem módulo wrapper.",
+      "panels": {
+        "anti": "AppModule com @NgModule",
+        "best": "bootstrapApplication()"
+      }
+    },
+    "rxjsFlattening": {
+      "title": "Operadores de Achatamento RxJS",
+      "navSubtitle": "switchMap / mergeMap / concatMap",
+      "tag": "RxJS",
+      "description": "Escolher o operador de achatamento errado quebra o comportamento silenciosamente. <strong>switchMap</strong> cancela o observable interno anterior — ideal para buscas, catastrófico para saves. <strong>concatMap</strong> enfileira as emissões — correto para escritas ordenadas. <strong>mergeMap</strong> roda concorrentemente — bom para leituras paralelas.",
+      "panels": {
+        "anti": "switchMap para escritas (cancela saves)",
+        "middle": "mergeMap — leituras concorrentes",
+        "best": "Operador certo para cada caso"
+      }
+    },
+    "combineLatest": {
+      "title": "combineLatest / withLatestFrom",
+      "navSubtitle": "Combinando streams",
+      "tag": "RxJS",
+      "description": "Aninhar <code>subscribe()</code> dentro de <code>subscribe()</code> cria callback hell, vazamentos de memória e cleanup impossível. <code>combineLatest()</code> emite sempre que qualquer fonte emite. <code>withLatestFrom()</code> amostra um stream secundário apenas quando o primário emite — ambos são planos e composáveis.",
+      "panels": {
+        "anti": "subscribe() aninhado",
+        "best": "combineLatest() / withLatestFrom()"
+      }
+    },
+    "higherOrderRxjs": {
+      "title": "Observables de Ordem Superior",
+      "navSubtitle": "Pipelines planos",
+      "tag": "RxJS",
+      "description": "Fazer subscribe dentro de um callback de <code>subscribe()</code> cria código aninhado e não gerenciável sem como cancelar subscriptions internas quando a externa completa. Operadores de ordem superior como <code>switchMap</code> achatam o stream em uma única subscription gerenciada automaticamente.",
+      "panels": {
+        "anti": "subscribe() aninhado dentro de subscribe()",
+        "best": "Pipeline plano com switchMap()"
+      }
+    },
     "formsStrategy": {
       "title": "Estratégia de Forms",
       "navSubtitle": "Boas práticas (bônus)",

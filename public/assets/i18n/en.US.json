@@ -257,6 +257,270 @@
         "description": "With Signals, Angular knows exactly <em>which</em> node in the template changed and updates only that DOM node, without traversing the entire component tree. Declaring <code>OnPush</code> formalizes this in the component's CD strategy, eliminating unnecessary checks even in Zone.js apps. In components built exclusively on Signals, Angular can eventually skip CD entirely (Zoneless Architecture - Angular 18+)."
       }
     },
+    "ngOptimizedImage": {
+      "title": "NgOptimizedImage",
+      "navSubtitle": "LCP & lazy loading",
+      "tag": "Performance",
+      "description": "A plain <code>&lt;img src&gt;</code> has no lazy loading, no intrinsic dimensions, and no fetch-priority hint — all of which hurt <strong>LCP</strong> and cause layout shift. The <code>NgOptimizedImage</code> directive fixes all three automatically.",
+      "panels": {
+        "anti": "Plain img tag",
+        "best": "NgOptimizedImage directive"
+      },
+      "demo": {
+        "label": "Live demo — inspect generated attributes in DevTools → Elements",
+        "plainLabel": "plain &lt;img&gt;",
+        "optimizedLabel": "NgOptimizedImage",
+        "tip": "Open DevTools → Elements and compare both sides. The plain images lack <code>loading</code>, <code>width/height</code>, and <code>fetchpriority</code>. The optimized images have <code>loading=\"lazy\"</code> on below-fold images, <code>fetchpriority=\"high\"</code> on the priority one (preventing layout shift and improving LCP)."
+      }
+    },
+    "virtualScroll": {
+      "title": "Virtual Scroll",
+      "navSubtitle": "Large list rendering",
+      "tag": "Performance",
+      "description": "Rendering thousands of items in the DOM at once causes massive layout thrashing and high memory usage. CDK <code>cdk-virtual-scroll-viewport</code> keeps only the visible rows in the DOM — list size no longer affects performance.",
+      "panels": {
+        "anti": "All items in DOM",
+        "best": "CDK Virtual Scroll"
+      },
+      "demo": {
+        "label": "Live demo — scroll both lists and compare",
+        "antiLabel": "all items rendered",
+        "bestLabel": "1 000 items",
+        "inDom": "in DOM",
+        "tip": "Open DevTools → Elements and count list rows on each side. The left renders 200 nodes eagerly (a real app with 1 000 would lock the browser). The CDK side renders only ~10 DOM nodes regardless of list length — scroll to item #1 000 instantly with no performance cost."
+      }
+    },
+    "purePipe": {
+      "title": "Pure Pipe",
+      "navSubtitle": "Memoized transforms",
+      "tag": "Performance",
+      "description": "Calling a method directly in a template expression re-executes it on <strong>every change detection cycle</strong>. A <code>pure: true</code> pipe is memoized by Angular — it only re-runs when the input reference changes.",
+      "panels": {
+        "anti": "Method call in template",
+        "best": "Pure pipe"
+      },
+      "demo": {
+        "label": "Live demo — watch call counts",
+        "triggerCD": "Trigger CD",
+        "changePrice": "Change price",
+        "reset": "Reset",
+        "stats": {
+          "cdTriggers": "CD triggers",
+          "methodCalls": "Method calls",
+          "pipeCalls": "Pipe calls"
+        },
+        "antiLabel": "method call",
+        "bestLabel": "pure pipe",
+        "tip": "Press <strong>Trigger CD</strong>: the method is called 5 times (once per product per cycle) while the pipe call count stays at zero — prices did not change so Angular skips re-evaluation. Press <strong>Change price</strong>: only 1 new pipe call fires (the changed item). The method always fires 5 times."
+      }
+    },
+    "toSignal": {
+      "title": "toSignal()",
+      "navSubtitle": "Observable → Signal bridge",
+      "tag": "Signals",
+      "description": "<code>toSignal()</code> converts any Observable into a readable Signal. It automatically subscribes in the injection context and unsubscribes when the component is destroyed — eliminating manual subscription boilerplate.",
+      "panels": {
+        "anti": "Manual subscribe()",
+        "best": "toSignal()"
+      }
+    },
+    "effectVsComputed": {
+      "title": "effect() vs computed()",
+      "navSubtitle": "Signals — right tool",
+      "tag": "Signals",
+      "description": "Use <code>computed()</code> to derive values from signals — it is synchronous, memoized, and tracked. Use <code>effect()</code> only for side-effects such as logging, analytics, or DOM manipulation. Writing to a signal inside <code>effect()</code> to compute a value is an anti-pattern.",
+      "panels": {
+        "anti": "effect() to derive state",
+        "best": "computed() + effect() for side-effects"
+      },
+      "demo": {
+        "label": "Live demo — observe evaluation order",
+        "changeFirstName": "Change first name",
+        "changeLastName": "Change last name",
+        "clear": "Clear",
+        "stats": {
+          "renders": "Renders",
+          "effectRuns": "Effect runs",
+          "computedEvals": "Computed evaluations"
+        },
+        "effectNote": "Updated asynchronously after render — causes an extra render cycle",
+        "computedNote": "Derived synchronously during the same render — zero extra cycles",
+        "consoleTitle": "Evaluation log",
+        "consoleEmpty": "Change a name to observe evaluation order...",
+        "tip": "Each name change: <code>computed()</code> evaluates once, synchronously, during rendering. The <code>effect()</code> runs <em>after</em> the render and writes to another signal — causing Angular to schedule a second render. Watch the <strong>Renders</strong> counter climb roughly twice as fast as <strong>Computed evaluations</strong>."
+      }
+    },
+    "linkedSignal": {
+      "title": "linkedSignal()",
+      "navSubtitle": "Derived writable signal",
+      "tag": "Signals",
+      "description": "<code>linkedSignal()</code> creates a signal that derives its default from another signal but remains writable. When the source changes, it resets to the new derived value — eliminating the verbose pattern of a separate signal plus an <code>effect()</code> to sync them.",
+      "panels": {
+        "anti": "Signal + effect() to sync",
+        "best": "linkedSignal()"
+      }
+    },
+    "signalInput": {
+      "title": "Signal Input",
+      "navSubtitle": "Reactive @Input",
+      "tag": "Signals",
+      "description": "The <code>@Input()</code> decorator is not reactive — you need <code>ngOnChanges</code> to react to changes. The <code>input()</code> function returns a signal, making the input directly composable with <code>computed()</code> and <code>effect()</code> without any lifecycle hook.",
+      "panels": {
+        "anti": "@Input() decorator",
+        "best": "input() signal function"
+      }
+    },
+    "facadePattern": {
+      "title": "Facade Pattern",
+      "navSubtitle": "Simplified service API",
+      "tag": "Architecture",
+      "description": "A component that injects multiple unrelated services becomes tightly coupled to every one of them. A <strong>Facade</strong> service aggregates and orchestrates those services internally — the component depends on a single, stable API.",
+      "panels": {
+        "anti": "Multiple injected services",
+        "best": "Single facade injection"
+      }
+    },
+    "smartDumb": {
+      "title": "Smart / Dumb Components",
+      "navSubtitle": "Container vs presentational",
+      "tag": "Architecture",
+      "description": "<strong>Smart</strong> (container) components fetch data and manage state. <strong>Dumb</strong> (presentational) components receive data via <code>input()</code> and emit events via <code>output()</code> — they are stateless, easily testable, and reusable.",
+      "panels": {
+        "anti": "Dumb component fetches its own data",
+        "best": "Smart fetches, dumb renders"
+      }
+    },
+    "injectionToken": {
+      "title": "InjectionToken",
+      "navSubtitle": "Testable configuration",
+      "tag": "Architecture",
+      "description": "Hardcoding <code>environment.apiUrl</code> directly in a service creates an untestable, unswappable dependency. An <code>InjectionToken</code> makes the value part of Angular's DI graph — trivially overridable in tests and per-environment configurations.",
+      "panels": {
+        "anti": "Hardcoded environment reference",
+        "best": "InjectionToken"
+      }
+    },
+    "folderStructure": {
+      "title": "Folder Structure",
+      "navSubtitle": "Feature vs type-based",
+      "tag": "Architecture",
+      "description": "Organizing by <strong>type</strong> (<code>components/</code>, <code>services/</code>, <code>pipes/</code>) mixes unrelated features and makes it hard to reason about or delete a feature. Organizing by <strong>feature</strong> keeps everything cohesive — each folder is self-contained and independently removable.",
+      "panels": {
+        "anti": "Type-based structure",
+        "best": "Feature-based structure"
+      }
+    },
+    "bypassSecurity": {
+      "title": "bypassSecurityTrust",
+      "navSubtitle": "XSS prevention",
+      "tag": "Security",
+      "description": "Calling <code>bypassSecurityTrustHtml(userInput)</code> disables Angular's built-in XSS sanitizer. Use <code>[innerHTML]</code> directly for user-provided content — Angular sanitizes it automatically. Only bypass sanitization for HTML you generate and control on the server.",
+      "panels": {
+        "anti": "bypassSecurityTrustHtml(userInput)",
+        "best": "[innerHTML] with auto-sanitization"
+      }
+    },
+    "httpOnlyCookie": {
+      "title": "HttpOnly Cookie",
+      "navSubtitle": "JWT storage security",
+      "tag": "Security",
+      "description": "Storing a JWT in <code>localStorage</code> makes it accessible to any JavaScript running on the page — including XSS payloads. An <strong>HttpOnly</strong> cookie is invisible to JavaScript entirely, eliminating the most common token-theft attack vector.",
+      "panels": {
+        "anti": "localStorage.setItem('token', jwt)",
+        "best": "Set-Cookie: HttpOnly; Secure; SameSite=Strict"
+      }
+    },
+    "httpClientGenerics": {
+      "title": "HttpClient Generics",
+      "navSubtitle": "Typed HTTP responses",
+      "tag": "TypeScript",
+      "description": "Calling <code>http.get()</code> without a type parameter returns <code>Observable&lt;Object&gt;</code> — all type safety is lost and consumers must cast manually. Providing the generic <code>http.get&lt;User[]&gt;()</code> gives you full IntelliSense, compile-time checks, and safe refactoring.",
+      "panels": {
+        "anti": "http.get() — untyped",
+        "best": "http.get<T>() — typed"
+      }
+    },
+    "outputFn": {
+      "title": "output() Function",
+      "navSubtitle": "Modern event emitter",
+      "tag": "TypeScript",
+      "description": "The <code>@Output()</code> decorator with <code>EventEmitter</code> is the classic approach but is verbose and class-based. The <code>output()</code> function is the modern equivalent — no decorator, no import of <code>EventEmitter</code>, and it pairs naturally with signal inputs.",
+      "panels": {
+        "anti": "@Output() EventEmitter",
+        "best": "output() function"
+      }
+    },
+    "typeGuard": {
+      "title": "Type Guards",
+      "navSubtitle": "unknown over any",
+      "tag": "TypeScript",
+      "description": "Using <code>any</code> silences the TypeScript compiler entirely — property access is unchecked and runtime crashes go undetected at compile time. <code>unknown</code> forces you to narrow the type before use, keeping the type system engaged and your code safe.",
+      "panels": {
+        "anti": "function process(value: any)",
+        "best": "unknown + type guard narrowing"
+      }
+    },
+    "injectFn": {
+      "title": "inject() Function",
+      "navSubtitle": "Modern DI",
+      "tag": "DX",
+      "description": "Constructor injection requires listing all dependencies as constructor parameters — verbose and hard to refactor. The <code>inject()</code> function declares dependencies as class fields, is easier to read, and also works in standalone functions and composable helpers outside the class.",
+      "panels": {
+        "anti": "Constructor injection",
+        "best": "inject() at field level"
+      }
+    },
+    "routeInputBinding": {
+      "title": "Route Input Binding",
+      "navSubtitle": "withComponentInputBinding",
+      "tag": "DX",
+      "description": "Reading route parameters via <code>ActivatedRoute.snapshot</code> is imperative and verbose. With <code>withComponentInputBinding()</code> enabled in the router config, Angular binds route params, query params, and resolve data directly to <code>input()</code> signals — zero boilerplate.",
+      "panels": {
+        "anti": "ActivatedRoute.snapshot",
+        "best": "withComponentInputBinding() + input()"
+      }
+    },
+    "bootstrapApp": {
+      "title": "bootstrapApplication()",
+      "navSubtitle": "No NgModule",
+      "tag": "DX",
+      "description": "The classic <code>AppModule</code> with <code>@NgModule({ bootstrap })</code> is boilerplate that serves no purpose in an all-standalone app. <code>bootstrapApplication()</code> bootstraps the root component directly with a flat providers array — no module wrapper needed.",
+      "panels": {
+        "anti": "AppModule with @NgModule",
+        "best": "bootstrapApplication()"
+      }
+    },
+    "rxjsFlattening": {
+      "title": "RxJS Flattening Operators",
+      "navSubtitle": "switchMap / mergeMap / concatMap",
+      "tag": "RxJS",
+      "description": "Choosing the wrong flattening operator silently breaks behavior. <strong>switchMap</strong> cancels the previous inner observable — ideal for search, catastrophic for saves. <strong>concatMap</strong> queues emissions — correct for ordered writes. <strong>mergeMap</strong> runs concurrently — good for parallel reads.",
+      "panels": {
+        "anti": "switchMap for writes (cancels saves)",
+        "middle": "mergeMap — concurrent reads",
+        "best": "Right operator for the right job"
+      }
+    },
+    "combineLatest": {
+      "title": "combineLatest / withLatestFrom",
+      "navSubtitle": "Combining streams",
+      "tag": "RxJS",
+      "description": "Nesting <code>subscribe()</code> inside <code>subscribe()</code> creates callback hell, memory leaks, and impossible cleanup. <code>combineLatest()</code> emits whenever any source emits. <code>withLatestFrom()</code> samples a secondary stream only when the primary emits — both are flat and composable.",
+      "panels": {
+        "anti": "Nested subscribe()",
+        "best": "combineLatest() / withLatestFrom()"
+      }
+    },
+    "higherOrderRxjs": {
+      "title": "Higher-Order Observables",
+      "navSubtitle": "Flat pipelines",
+      "tag": "RxJS",
+      "description": "Subscribing inside a <code>subscribe()</code> callback creates deeply nested, unmanageable code with no way to cancel inner subscriptions when the outer completes. Higher-order operators like <code>switchMap</code> flatten the stream into a single subscription that is automatically managed.",
+      "panels": {
+        "anti": "Nested subscribe() inside subscribe()",
+        "best": "switchMap() flat pipeline"
+      }
+    },
     "formsStrategy": {
       "title": "Forms Strategy",
       "navSubtitle": "Best practices (bonus)",
