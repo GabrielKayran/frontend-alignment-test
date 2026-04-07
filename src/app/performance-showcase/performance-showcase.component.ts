@@ -14,6 +14,28 @@ import { SignalReadonlyComponent } from './sections/signal-readonly/signal-reado
 import { TrackForComponent } from './sections/track-for/track-for.component';
 import { DeferBlocksComponent } from './sections/defer-blocks/defer-blocks.component';
 import { FormsStrategyComponent } from './sections/forms-strategy/forms-strategy.component';
+import { NgOptimizedImageComponent } from './sections/ng-optimized-image/ng-optimized-image.component';
+import { VirtualScrollComponent } from './sections/virtual-scroll/virtual-scroll.component';
+import { PurePipeComponent } from './sections/pure-pipe/pure-pipe.component';
+import { ToSignalComponent } from './sections/to-signal/to-signal.component';
+import { EffectVsComputedComponent } from './sections/effect-vs-computed/effect-vs-computed.component';
+import { LinkedSignalComponent } from './sections/linked-signal/linked-signal.component';
+import { SignalInputComponent } from './sections/signal-input/signal-input.component';
+import { FacadePatternComponent } from './sections/facade-pattern/facade-pattern.component';
+import { SmartDumbComponent } from './sections/smart-dumb/smart-dumb.component';
+import { InjectionTokenComponent } from './sections/injection-token/injection-token.component';
+import { FolderStructureComponent } from './sections/folder-structure/folder-structure.component';
+import { BypassSecurityComponent } from './sections/bypass-security/bypass-security.component';
+import { HttpOnlyCookieComponent } from './sections/http-only-cookie/http-only-cookie.component';
+import { HttpClientGenericsComponent } from './sections/http-client-generics/http-client-generics.component';
+import { OutputFnComponent } from './sections/output-fn/output-fn.component';
+import { TypeGuardComponent } from './sections/type-guard/type-guard.component';
+import { InjectFnComponent } from './sections/inject-fn/inject-fn.component';
+import { RouteInputBindingComponent } from './sections/route-input-binding/route-input-binding.component';
+import { BootstrapAppComponent } from './sections/bootstrap-app/bootstrap-app.component';
+import { RxjsFlatteningComponent } from './sections/rxjs-flattening/rxjs-flattening.component';
+import { CombineLatestComponent } from './sections/combine-latest/combine-latest.component';
+import { HigherOrderRxjsComponent } from './sections/higher-order-rxjs/higher-order-rxjs.component';
 
 interface Section {
   id: string;
@@ -42,6 +64,28 @@ interface Section {
     DeferBlocksComponent,
     OnPushComponent,
     FormsStrategyComponent,
+    NgOptimizedImageComponent,
+    VirtualScrollComponent,
+    PurePipeComponent,
+    ToSignalComponent,
+    EffectVsComputedComponent,
+    LinkedSignalComponent,
+    SignalInputComponent,
+    FacadePatternComponent,
+    SmartDumbComponent,
+    InjectionTokenComponent,
+    FolderStructureComponent,
+    BypassSecurityComponent,
+    HttpOnlyCookieComponent,
+    HttpClientGenericsComponent,
+    OutputFnComponent,
+    TypeGuardComponent,
+    InjectFnComponent,
+    RouteInputBindingComponent,
+    BootstrapAppComponent,
+    RxjsFlatteningComponent,
+    CombineLatestComponent,
+    HigherOrderRxjsComponent,
   ],
   templateUrl: './performance-showcase.component.html',
   styleUrl: './performance-showcase.component.scss',
@@ -115,6 +159,138 @@ export class PerformanceShowcaseComponent implements OnInit, OnDestroy {
       index: 11,
       titleKey: 'sections.formsStrategy.title',
       subtitleKey: 'sections.formsStrategy.navSubtitle',
+    },
+    {
+      id: 'ng-optimized-image',
+      index: 12,
+      titleKey: 'sections.ngOptimizedImage.title',
+      subtitleKey: 'sections.ngOptimizedImage.navSubtitle',
+    },
+    {
+      id: 'virtual-scroll',
+      index: 13,
+      titleKey: 'sections.virtualScroll.title',
+      subtitleKey: 'sections.virtualScroll.navSubtitle',
+    },
+    {
+      id: 'pure-pipe',
+      index: 14,
+      titleKey: 'sections.purePipe.title',
+      subtitleKey: 'sections.purePipe.navSubtitle',
+    },
+    {
+      id: 'to-signal',
+      index: 15,
+      titleKey: 'sections.toSignal.title',
+      subtitleKey: 'sections.toSignal.navSubtitle',
+    },
+    {
+      id: 'effect-vs-computed',
+      index: 16,
+      titleKey: 'sections.effectVsComputed.title',
+      subtitleKey: 'sections.effectVsComputed.navSubtitle',
+    },
+    {
+      id: 'linked-signal',
+      index: 17,
+      titleKey: 'sections.linkedSignal.title',
+      subtitleKey: 'sections.linkedSignal.navSubtitle',
+    },
+    {
+      id: 'signal-input',
+      index: 18,
+      titleKey: 'sections.signalInput.title',
+      subtitleKey: 'sections.signalInput.navSubtitle',
+    },
+    {
+      id: 'facade-pattern',
+      index: 19,
+      titleKey: 'sections.facadePattern.title',
+      subtitleKey: 'sections.facadePattern.navSubtitle',
+    },
+    {
+      id: 'smart-dumb',
+      index: 20,
+      titleKey: 'sections.smartDumb.title',
+      subtitleKey: 'sections.smartDumb.navSubtitle',
+    },
+    {
+      id: 'injection-token',
+      index: 21,
+      titleKey: 'sections.injectionToken.title',
+      subtitleKey: 'sections.injectionToken.navSubtitle',
+    },
+    {
+      id: 'folder-structure',
+      index: 22,
+      titleKey: 'sections.folderStructure.title',
+      subtitleKey: 'sections.folderStructure.navSubtitle',
+    },
+    {
+      id: 'bypass-security',
+      index: 23,
+      titleKey: 'sections.bypassSecurity.title',
+      subtitleKey: 'sections.bypassSecurity.navSubtitle',
+    },
+    {
+      id: 'http-only-cookie',
+      index: 24,
+      titleKey: 'sections.httpOnlyCookie.title',
+      subtitleKey: 'sections.httpOnlyCookie.navSubtitle',
+    },
+    {
+      id: 'http-client-generics',
+      index: 25,
+      titleKey: 'sections.httpClientGenerics.title',
+      subtitleKey: 'sections.httpClientGenerics.navSubtitle',
+    },
+    {
+      id: 'output-fn',
+      index: 26,
+      titleKey: 'sections.outputFn.title',
+      subtitleKey: 'sections.outputFn.navSubtitle',
+    },
+    {
+      id: 'type-guard',
+      index: 27,
+      titleKey: 'sections.typeGuard.title',
+      subtitleKey: 'sections.typeGuard.navSubtitle',
+    },
+    {
+      id: 'inject-fn',
+      index: 28,
+      titleKey: 'sections.injectFn.title',
+      subtitleKey: 'sections.injectFn.navSubtitle',
+    },
+    {
+      id: 'route-input-binding',
+      index: 29,
+      titleKey: 'sections.routeInputBinding.title',
+      subtitleKey: 'sections.routeInputBinding.navSubtitle',
+    },
+    {
+      id: 'bootstrap-app',
+      index: 30,
+      titleKey: 'sections.bootstrapApp.title',
+      subtitleKey: 'sections.bootstrapApp.navSubtitle',
+    },
+    {
+      id: 'rxjs-flattening',
+      index: 31,
+      titleKey: 'sections.rxjsFlattening.title',
+      subtitleKey: 'sections.rxjsFlattening.navSubtitle',
+    },
+    {
+      id: 'combine-latest',
+      index: 32,
+      titleKey: 'sections.combineLatest.title',
+      subtitleKey: 'sections.combineLatest.navSubtitle',
+    },
+    {
+      id: 'higher-order-rxjs',
+      index: 33,
+      titleKey: 'sections.higherOrderRxjs.title',
+      subtitleKey: 'sections.higherOrderRxjs.navSubtitle',
     },
   ];
 

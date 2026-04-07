@@ -1,0 +1,36 @@
+<section id="rxjs-flattening" class="section">
+  <div class="section__header">
+    <span class="section__number">31</span>
+    <div>
+      <h2 class="section__title">
+        {{ 'sections.rxjsFlattening.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.rxjsFlattening.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.rxjsFlattening.description' | translate"></p>
+    </div>
+  </div>
+
+  <div class="panel-grid panel-grid--three">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; {{ 'sections.rxjsFlattening.panels.anti' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+    <div class="panel panel--neutral">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--neutral">&#9432; {{ 'sections.rxjsFlattening.panels.middle' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeMiddle"></pre>
+    </div>
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; {{ 'sections.rxjsFlattening.panels.best' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+</section>

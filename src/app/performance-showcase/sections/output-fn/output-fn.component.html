@@ -1,0 +1,29 @@
+<section id="output-fn" class="section">
+  <div class="section__header">
+    <span class="section__number">26</span>
+    <div>
+      <h2 class="section__title">
+        {{ 'sections.outputFn.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.outputFn.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.outputFn.description' | translate"></p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; {{ 'sections.outputFn.panels.anti' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; {{ 'sections.outputFn.panels.best' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,106 @@
+<section id="effect-vs-computed" class="section">
+  <div class="section__header">
+    <span class="section__number">16</span>
+    <div>
+      <h2 class="section__title">
+        {{ 'sections.effectVsComputed.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.effectVsComputed.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.effectVsComputed.description' | translate"></p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; {{ 'sections.effectVsComputed.panels.anti' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; {{ 'sections.effectVsComputed.panels.best' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">{{ 'sections.effectVsComputed.demo.label' | translate }}</span>
+      <div class="demo-actions">
+        <button class="btn btn--outline" (click)="changeFirstName()">
+          {{ 'sections.effectVsComputed.demo.changeFirstName' | translate }}
+        </button>
+        <button class="btn btn--outline" (click)="changeLastName()">
+          {{ 'sections.effectVsComputed.demo.changeLastName' | translate }}
+        </button>
+        <button class="btn btn--ghost" (click)="clearLog()">
+          {{ 'sections.effectVsComputed.demo.clear' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="demo-stats">
+      <div class="stat-card">
+        <span class="stat-card__label">{{ 'sections.effectVsComputed.demo.stats.renders' | translate }}</span>
+        <span class="stat-card__value stat-card__value--neutral">{{ renderCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">{{ 'sections.effectVsComputed.demo.stats.effectRuns' | translate }}</span>
+        <span class="stat-card__value stat-card__value--anti">{{ effectRunCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">{{ 'sections.effectVsComputed.demo.stats.computedEvals' | translate }}</span>
+        <span class="stat-card__value stat-card__value--best">{{ computedEvalCount() }}</span>
+      </div>
+    </div>
+
+    <!-- Live name display -->
+    <div class="name-display-grid">
+      <div class="name-card name-card--anti">
+        <span class="name-card__badge">&#10007; effect()</span>
+        <span class="name-card__name">{{ fullNameEffect() }}</span>
+        <span class="name-card__note">{{ 'sections.effectVsComputed.demo.effectNote' | translate }}</span>
+      </div>
+      <div class="name-card name-card--best">
+        <span class="name-card__badge">&#10003; computed()</span>
+        <span class="name-card__name">{{ fullNameComputed() }}</span>
+        <span class="name-card__note">{{ 'sections.effectVsComputed.demo.computedNote' | translate }}</span>
+      </div>
+    </div>
+
+    <div class="fake-console">
+      <div class="fake-console__bar">
+        <span class="fake-console__dot"></span>
+        <span class="fake-console__dot"></span>
+        <span class="fake-console__dot"></span>
+        <span class="fake-console__title">
+          {{ 'sections.effectVsComputed.demo.consoleTitle' | translate }}
+        </span>
+      </div>
+      <div class="fake-console__body">
+        @if (logEntries().length === 0) {
+          <p class="fake-console__empty">
+            {{ 'sections.effectVsComputed.demo.consoleEmpty' | translate }}
+          </p>
+        }
+        @for (entry of logEntries(); track $index) {
+          <div
+            class="log-line"
+            [class.log-line--anti]="entry.type === 'anti'"
+            [class.log-line--best]="entry.type === 'best'"
+          >
+            <span class="log-line__prefix">{{ entry.type === 'anti' ? '●' : '○' }}</span>
+            <span class="log-line__kind">{{ entry.type === 'anti' ? 'EFFECT' : 'COMPUTED' }}</span>
+            {{ entry.message.replace('[EFFECT] ', '').replace('[COMPUTED] ', '') }}
+          </div>
+        }
+      </div>
+    </div>
+
+    <p class="demo-tip" [innerHTML]="'sections.effectVsComputed.demo.tip' | translate"></p>
+  </div>
+</section>
