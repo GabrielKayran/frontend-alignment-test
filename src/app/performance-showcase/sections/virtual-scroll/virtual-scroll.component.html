@@ -1,0 +1,75 @@
+<section id="virtual-scroll" class="section">
+  <div class="section__header">
+    <span class="section__number">13</span>
+    <div>
+      <h2 class="section__title">
+        {{ 'sections.virtualScroll.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.virtualScroll.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.virtualScroll.description' | translate"></p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; {{ 'sections.virtualScroll.panels.anti' | translate }}</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; {{ 'sections.virtualScroll.panels.best' | translate }}</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">{{ 'sections.virtualScroll.demo.label' | translate }}</span>
+    </div>
+
+    <div class="scroll-demo-grid">
+      <!-- Anti: plain @for, all items in DOM -->
+      <div class="scroll-col">
+        <div class="scroll-col__header scroll-col__header--anti">
+          <span>&#10007; &#64;for &mdash; {{ 'sections.virtualScroll.demo.antiLabel' | translate }}</span>
+          <span class="scroll-col__stat">
+            {{ antiItems.length }} / {{ antiItems.length }} {{ 'sections.virtualScroll.demo.inDom' | translate }}
+          </span>
+        </div>
+        <div class="scroll-area scroll-area--anti">
+          @for (item of antiItems; track item.id) {
+            <div class="list-row">
+              <span class="list-row__id">#{{ item.id }}</span>
+              <span class="list-row__label">{{ item.label }}</span>
+              <span class="list-row__value">{{ item.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Best: CDK Virtual Scroll -->
+      <div class="scroll-col">
+        <div class="scroll-col__header scroll-col__header--best">
+          <span>&#10003; CDK Virtual Scroll &mdash; {{ 'sections.virtualScroll.demo.bestLabel' | translate }}</span>
+          <span class="scroll-col__stat">
+            ~10 / {{ virtualItems.length }} {{ 'sections.virtualScroll.demo.inDom' | translate }}
+          </span>
+        </div>
+        <cdk-virtual-scroll-viewport itemSize="40" class="scroll-area">
+          <div *cdkVirtualFor="let item of virtualItems" class="list-row">
+            <span class="list-row__id">#{{ item.id }}</span>
+            <span class="list-row__label">{{ item.label }}</span>
+            <span class="list-row__value">{{ item.value }}</span>
+          </div>
+        </cdk-virtual-scroll-viewport>
+      </div>
+    </div>
+
+    <p class="demo-tip" [innerHTML]="'sections.virtualScroll.demo.tip' | translate"></p>
+  </div>
+</section>

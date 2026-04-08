@@ -1,0 +1,91 @@
+<section id="pure-pipe" class="section">
+  <div class="section__header">
+    <span class="section__number">14</span>
+    <div>
+      <h2 class="section__title">
+        {{ 'sections.purePipe.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.purePipe.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.purePipe.description' | translate"></p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; {{ 'sections.purePipe.panels.anti' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; {{ 'sections.purePipe.panels.best' | translate }}</span>
+        <span class="panel__lang">TypeScript</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">{{ 'sections.purePipe.demo.label' | translate }}</span>
+      <div class="demo-actions">
+        <button class="btn btn--outline" (click)="triggerCD()">
+          {{ 'sections.purePipe.demo.triggerCD' | translate }}
+        </button>
+        <button class="btn btn--primary" (click)="changePrice()">
+          {{ 'sections.purePipe.demo.changePrice' | translate }}
+        </button>
+        <button class="btn btn--ghost" (click)="reset()">
+          {{ 'sections.purePipe.demo.reset' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="demo-stats">
+      <div class="stat-card">
+        <span class="stat-card__label">{{ 'sections.purePipe.demo.stats.cdTriggers' | translate }}</span>
+        <span class="stat-card__value stat-card__value--neutral">{{ cdTriggerCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">{{ 'sections.purePipe.demo.stats.methodCalls' | translate }}</span>
+        <span class="stat-card__value stat-card__value--anti">{{ methodCallCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__label">{{ 'sections.purePipe.demo.stats.pipeCalls' | translate }}</span>
+        <span class="stat-card__value stat-card__value--best">{{ pipeCallCount() }}</span>
+      </div>
+    </div>
+
+    <div class="pipe-demo-grid">
+      <!-- Anti: method call per row -->
+      <div class="pipe-col">
+        <div class="pipe-col__header pipe-col__header--anti">
+          &#10007; {{ 'sections.purePipe.demo.antiLabel' | translate }}
+        </div>
+        @for (product of products(); track product.id) {
+          <div class="pipe-row" [class.pipe-row--changed]="product.id === 1">
+            <span class="pipe-row__name">{{ product.name }}</span>
+            <span class="pipe-row__price pipe-row__price--anti">{{ formatPriceMethod(product.price) }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Best: pure pipe -->
+      <div class="pipe-col">
+        <div class="pipe-col__header pipe-col__header--best">
+          &#10003; {{ 'sections.purePipe.demo.bestLabel' | translate }}
+        </div>
+        @for (product of products(); track product.id) {
+          <div class="pipe-row" [class.pipe-row--changed]="product.id === 1">
+            <span class="pipe-row__name">{{ product.name }}</span>
+            <span class="pipe-row__price pipe-row__price--best">{{ product.price | formatPrice }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <p class="demo-tip" [innerHTML]="'sections.purePipe.demo.tip' | translate"></p>
+  </div>
+</section>

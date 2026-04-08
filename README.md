@@ -12,10 +12,12 @@ This is not a starter kit or a design system. It is a learning and alignment too
 
 ## What the showcase covers
 
-The current version includes 11 sections:
+The current version includes 33 sections across 7 categories.
+
+### Performance
 
 1. `Getter vs Signal`
-   Class getter re-evaluation on every change detection cycle versus `computed()` memoization.
+   Class getter re-evaluation on every change detection cycle versus `computed()` memoization. Live demo with CD trigger counter.
 2. `Lazy Loading`
    `loadChildren` with NgModules versus `loadComponent` with standalone components.
 3. `Signal Encapsulation`
@@ -24,18 +26,80 @@ The current version includes 11 sections:
    Global singleton services versus component-scoped providers for ephemeral state.
 5. `Input Debounce`
    Firing work on every keystroke versus `debounceTime()` and `distinctUntilChanged()`.
-6. `track` in `@for`
+6. `track in @for`
    Tracking by `$index` versus stable identity with `item.id`.
 7. `Observable Cleanup`
    Manual cleanup versus `takeUntilDestroyed()`.
 8. `SharedModule Anti-pattern`
    Large shared module re-exports versus explicit standalone imports.
-9. `@defer` Blocks
+9. `@defer Blocks`
    Eager rendering versus declarative lazy template loading.
 10. `OnPush Change Detection`
-    Default strategy versus `ChangeDetectionStrategy.OnPush`.
+    Default strategy versus `ChangeDetectionStrategy.OnPush`. Live demo with render counters.
 11. `Forms Strategy`
     When reactive forms are a better fit than template-driven forms.
+12. `NgOptimizedImage`
+    Plain `<img>` versus the `NgOptimizedImage` directive. Live demo showing actual images with attribute badges (`loading`, `fetchpriority`, `width/height`).
+13. `Virtual Scroll`
+    Rendering all rows in the DOM versus CDK `cdk-virtual-scroll-viewport`. Live demo with 1 000 items: left renders 200 nodes eagerly, right renders ~10 at any time.
+14. `Pure Pipe`
+    Method call in template versus `pure: true` pipe. Live demo with call counters — identical to the getter-vs-signal concept applied to transform functions.
+
+### State / Reactivity
+
+15. `toSignal()`
+    Manual `subscribe()` + property assignment versus `toSignal()` for automatic conversion.
+16. `effect() vs computed()`
+    Using `effect()` to derive state (anti-pattern) versus `computed()`. Live demo with an evaluation log showing that `computed()` runs synchronously during rendering while `effect()` fires after the render and causes an extra CD cycle.
+17. `linkedSignal()`
+    A separate signal plus an `effect()` to keep them in sync versus `linkedSignal()` for a derived but writable signal that resets automatically when its source changes.
+18. `Signal Input`
+    `@Input()` decorator (not reactive, requires `ngOnChanges`) versus `input()` signal function (reactive, composable with `computed()`).
+
+### Architecture
+
+19. `Facade Pattern`
+    Component injecting multiple unrelated services directly versus a single facade that orchestrates them internally.
+20. `Smart / Dumb Components`
+    Presentational component fetching its own data versus a smart parent fetching and passing data via `input()`.
+21. `InjectionToken`
+    Hardcoded `environment.apiUrl` in a service versus an `InjectionToken` with a factory for testable, swappable configuration.
+22. `Folder Structure`
+    Type-based folder layout (`components/`, `services/`, `pipes/`) versus feature-based layout (`feature/auth/`, `feature/cart/`) shown as annotated folder trees.
+
+### Security
+
+23. `bypassSecurityTrustHtml`
+    Bypassing Angular's sanitizer versus letting `[innerHTML]` sanitize automatically.
+24. `HttpOnly Cookie vs localStorage`
+    Storing tokens in `localStorage` (accessible via JS, XSS-vulnerable) versus server-set `HttpOnly; Secure; SameSite=Strict` cookies.
+
+### Typing
+
+25. `HttpClient with Generics`
+    Untyped `http.get()` returning `Observable<Object>` versus `http.get<User[]>()` for compile-time safety.
+26. `output() vs EventEmitter`
+    `@Output() selected = new EventEmitter<Item>()` versus `selected = output<Item>()`.
+27. `unknown + Type Guard vs any`
+    `function process(value: any)` versus `unknown` with a narrowing type guard.
+
+### DX
+
+28. `inject() vs Constructor Injection`
+    Constructor parameter injection versus `inject()` — composable, usable outside class constructors.
+29. `withComponentInputBinding()`
+    Reading route params via `ActivatedRoute.snapshot` versus automatic binding through `withComponentInputBinding()` + `input()`.
+30. `bootstrapApplication vs AppModule`
+    NgModule-based bootstrap with `platformBrowserDynamic().bootstrapModule()` versus `bootstrapApplication()` with `provideRouter()` and `provideHttpClient()`.
+
+### RxJS
+
+31. `RxJS Flattening Operators`
+    Semantic choice between `switchMap` (cancel previous — search), `concatMap` (queue — ordered writes), and `mergeMap` (concurrent — parallel reads). Three-panel comparison.
+32. `combineLatest vs withLatestFrom`
+    Nested `subscribe()` inside `subscribe()` versus `combineLatest()` (re-emits on any source) and `withLatestFrom()` (samples on primary only).
+33. `Higher-Order Observables`
+    Nested `subscribe()` callback hell versus a flat `switchMap()` pipeline with automatic inner subscription management.
 
 ## Architecture highlights
 
@@ -45,6 +109,7 @@ The current version includes 11 sections:
 - Client hydration with event replay.
 - `@ngx-translate` based internationalization with `en.US` and `pt-BR`.
 - Interactive examples structured as isolated sections under a single showcase page.
+- CDK virtual scroll (`@angular/cdk`) for the virtual scroll section.
 - Vitest-based test execution through `ng test`.
 
 ## Tech stack
@@ -52,6 +117,7 @@ The current version includes 11 sections:
 - Angular 21
 - TypeScript 5.9
 - RxJS 7
+- Angular CDK
 - Angular SSR
 - Express
 - `@ngx-translate/core`
@@ -66,17 +132,39 @@ src/
       language.service.ts
     performance-showcase/
       sections/
+        bypass-security/
+        bootstrap-app/
+        combine-latest/
         defer-blocks/
+        effect-vs-computed/
+        facade-pattern/
+        folder-structure/
         forms-strategy/
         getter-vs-signal/
+        higher-order-rxjs/
+        http-client-generics/
+        http-only-cookie/
+        inject-fn/
+        injection-token/
         input-debounce/
         lazy-loading/
+        linked-signal/
+        ng-optimized-image/
         observable-cleanup/
         on-push/
+        output-fn/
+        pure-pipe/
+        route-input-binding/
+        rxjs-flattening/
         service-scope/
         shared-module-pattern/
+        signal-input/
         signal-readonly/
+        smart-dumb/
+        to-signal/
         track-for/
+        type-guard/
+        virtual-scroll/
     shared/
       language-switcher/
 ```

@@ -1,0 +1,47 @@
+:host {
+  display: contents;
+}
+
+.name-display-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  margin: 0 16px 16px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.name-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+
+  &--anti { background: var(--anti-dim); }
+  &--best  { background: var(--best-dim); }
+}
+
+.name-card__badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  .name-card--anti & { color: var(--anti); }
+  .name-card--best  & { color: var(--best); }
+}
+
+.name-card__name {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+  min-height: 28px;
+}
+
+.name-card__note {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.5;
+}

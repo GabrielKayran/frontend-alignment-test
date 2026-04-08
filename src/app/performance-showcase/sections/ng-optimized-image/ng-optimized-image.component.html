@@ -1,0 +1,84 @@
+<section id="ng-optimized-image" class="section">
+  <div class="section__header">
+    <span class="section__number">12</span>
+    <div>
+      <h2 class="section__title">
+        {{ 'sections.ngOptimizedImage.title' | translate }}
+        <span class="tag-pill tag-pill--cyan">{{ 'sections.ngOptimizedImage.tag' | translate }}</span>
+      </h2>
+      <p class="section__desc" [innerHTML]="'sections.ngOptimizedImage.description' | translate"></p>
+    </div>
+  </div>
+
+  <div class="panel-grid">
+    <div class="panel panel--anti">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--anti">&#10007; {{ 'sections.ngOptimizedImage.panels.anti' | translate }}</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeAnti"></pre>
+    </div>
+    <div class="panel panel--best">
+      <div class="panel__header">
+        <span class="panel__badge panel__badge--best">&#10003; {{ 'sections.ngOptimizedImage.panels.best' | translate }}</span>
+        <span class="panel__lang">HTML</span>
+      </div>
+      <pre class="code-block" [innerHTML]="codeBest"></pre>
+    </div>
+  </div>
+
+  <div class="demo-box">
+    <div class="demo-box__header">
+      <span class="demo-label">{{ 'sections.ngOptimizedImage.demo.label' | translate }}</span>
+    </div>
+
+    <div class="image-demo-grid">
+      <!-- Anti: plain <img> -->
+      <div class="image-col">
+        <div class="image-col__header image-col__header--anti">
+          &#10007; {{ 'sections.ngOptimizedImage.demo.plainLabel' | translate }}
+        </div>
+        @for (img of images; track img.id) {
+          <div class="image-card">
+            <img [src]="imageUrl(img.id)" [alt]="img.alt" class="demo-img">
+            <div class="attr-row">
+              <span class="attr-badge attr-badge--missing">no loading</span>
+              <span class="attr-badge attr-badge--missing">no width/height</span>
+              <span class="attr-badge attr-badge--missing">no fetchpriority</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Best: ngSrc -->
+      <div class="image-col">
+        <div class="image-col__header image-col__header--best">
+          &#10003; {{ 'sections.ngOptimizedImage.demo.optimizedLabel' | translate }}
+        </div>
+        @for (img of images; track img.id) {
+          <div class="image-card">
+            <img
+              [ngSrc]="imageUrl(img.id)"
+              width="480"
+              height="300"
+              [alt]="img.alt"
+              [priority]="img.priority"
+              class="demo-img"
+            >
+            <div class="attr-row">
+              @if (img.priority) {
+                <span class="attr-badge attr-badge--priority">fetchpriority="high"</span>
+                <span class="attr-badge attr-badge--good">preload link injected</span>
+              } @else {
+                <span class="attr-badge attr-badge--good">loading="lazy"</span>
+              }
+              <span class="attr-badge attr-badge--good">width + height ✓</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <p class="demo-tip" [innerHTML]="'sections.ngOptimizedImage.demo.tip' | translate"></p>
+  </div>
+</section>
