@@ -7,8 +7,27 @@
       <app-language-switcher />
     </div>
 
+    <div class="sidebar__filter">
+      <button
+        class="filter-chip"
+        [class.filter-chip--active]="selectedCategory() === null"
+        (click)="selectCategory(null)"
+      >
+        All
+      </button>
+      @for (cat of categories; track cat) {
+        <button
+          class="filter-chip"
+          [class.filter-chip--active]="selectedCategory() === cat"
+          (click)="selectCategory(cat)"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+
     <ul class="sidebar__nav" role="list">
-      @for (section of sections; track section.id) {
+      @for (section of filteredSections(); track section.id) {
         <li>
           <button
             class="nav-item"
@@ -30,11 +49,21 @@
       <span class="sidebar__tech">{{ 'layout.sidebar.techStack' | translate }}</span>
       <span class="sidebar__credit">
         {{ 'layout.sidebar.creditPrefix' | translate }}
-        <a class="sidebar__link" href="https://www.instagram.com/gabrielkayran/" target="_blank" rel="noopener noreferrer">
+        <a
+          class="sidebar__link"
+          href="https://www.instagram.com/gabrielkayran/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           &#64;GabrielKayran
         </a>
         <span aria-hidden="true">|</span>
-        <a class="sidebar__link" href="https://www.instagram.com/arthurmds/" target="_blank" rel="noopener noreferrer">
+        <a
+          class="sidebar__link"
+          href="https://www.instagram.com/arthurmds/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           &#64;Arthur Maia
         </a>
       </span>
@@ -47,38 +76,123 @@
       <app-language-switcher />
     </div>
 
-    <app-section-getter-vs-signal />
-    <app-section-lazy-loading />
-    <app-section-signal-readonly />
-    <app-section-service-scope />
-    <app-section-input-debounce />
-    <app-section-track-for />
-    <app-section-observable-cleanup />
-    <app-section-shared-module-pattern />
-    <app-section-defer-blocks />
-    <app-section-on-push />
-    <app-section-forms-strategy />
-    <app-section-ng-optimized-image />
-    <app-section-virtual-scroll />
-    <app-section-pure-pipe />
-    <app-section-to-signal />
-    <app-section-effect-vs-computed />
-    <app-section-linked-signal />
-    <app-section-signal-input />
-    <app-section-facade-pattern />
-    <app-section-smart-dumb />
-    <app-section-injection-token />
-    <app-section-folder-structure />
-    <app-section-bypass-security />
-    <app-section-http-only-cookie />
-    <app-section-http-client-generics />
-    <app-section-output-fn />
-    <app-section-type-guard />
-    <app-section-inject-fn />
-    <app-section-route-input-binding />
-    <app-section-bootstrap-app />
-    <app-section-rxjs-flattening />
-    <app-section-combine-latest />
-    <app-section-higher-order-rxjs />
+    <div class="mobile-filter">
+      <button
+        class="filter-chip"
+        [class.filter-chip--active]="selectedCategory() === null"
+        (click)="selectCategory(null)"
+      >
+        All
+      </button>
+      @for (cat of categories; track cat) {
+        <button
+          class="filter-chip"
+          [class.filter-chip--active]="selectedCategory() === cat"
+          (click)="selectCategory(cat)"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    @if (isSectionVisible('getter-vs-signal')) {
+      <app-section-getter-vs-signal />
+    }
+    @if (isSectionVisible('lazy-loading')) {
+      <app-section-lazy-loading />
+    }
+    @if (isSectionVisible('signal-readonly')) {
+      <app-section-signal-readonly />
+    }
+    @if (isSectionVisible('service-scope')) {
+      <app-section-service-scope />
+    }
+    @if (isSectionVisible('debounce')) {
+      <app-section-input-debounce />
+    }
+    @if (isSectionVisible('track-for')) {
+      <app-section-track-for />
+    }
+    @if (isSectionVisible('unsubscribe')) {
+      <app-section-observable-cleanup />
+    }
+    @if (isSectionVisible('shared-module')) {
+      <app-section-shared-module-pattern />
+    }
+    @if (isSectionVisible('defer-blocks')) {
+      <app-section-defer-blocks />
+    }
+    @if (isSectionVisible('on-push')) {
+      <app-section-on-push />
+    }
+    @if (isSectionVisible('forms')) {
+      <app-section-forms-strategy />
+    }
+    @if (isSectionVisible('ng-optimized-image')) {
+      <app-section-ng-optimized-image />
+    }
+    @if (isSectionVisible('virtual-scroll')) {
+      <app-section-virtual-scroll />
+    }
+    @if (isSectionVisible('pure-pipe')) {
+      <app-section-pure-pipe />
+    }
+    @if (isSectionVisible('to-signal')) {
+      <app-section-to-signal />
+    }
+    @if (isSectionVisible('effect-vs-computed')) {
+      <app-section-effect-vs-computed />
+    }
+    @if (isSectionVisible('linked-signal')) {
+      <app-section-linked-signal />
+    }
+    @if (isSectionVisible('signal-input')) {
+      <app-section-signal-input />
+    }
+    @if (isSectionVisible('facade-pattern')) {
+      <app-section-facade-pattern />
+    }
+    @if (isSectionVisible('smart-dumb')) {
+      <app-section-smart-dumb />
+    }
+    @if (isSectionVisible('injection-token')) {
+      <app-section-injection-token />
+    }
+    @if (isSectionVisible('folder-structure')) {
+      <app-section-folder-structure />
+    }
+    @if (isSectionVisible('bypass-security')) {
+      <app-section-bypass-security />
+    }
+    @if (isSectionVisible('http-only-cookie')) {
+      <app-section-http-only-cookie />
+    }
+    @if (isSectionVisible('http-client-generics')) {
+      <app-section-http-client-generics />
+    }
+    @if (isSectionVisible('output-fn')) {
+      <app-section-output-fn />
+    }
+    @if (isSectionVisible('type-guard')) {
+      <app-section-type-guard />
+    }
+    @if (isSectionVisible('inject-fn')) {
+      <app-section-inject-fn />
+    }
+    @if (isSectionVisible('route-input-binding')) {
+      <app-section-route-input-binding />
+    }
+    @if (isSectionVisible('bootstrap-app')) {
+      <app-section-bootstrap-app />
+    }
+    @if (isSectionVisible('rxjs-flattening')) {
+      <app-section-rxjs-flattening />
+    }
+    @if (isSectionVisible('combine-latest')) {
+      <app-section-combine-latest />
+    }
+    @if (isSectionVisible('higher-order-rxjs')) {
+      <app-section-higher-order-rxjs />
+    }
   </main>
 </div>

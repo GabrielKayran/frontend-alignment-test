@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -42,6 +42,7 @@ interface Section {
   index: number;
   titleKey: string;
   subtitleKey: string;
+  category: string;
 }
 
 @Component({
@@ -99,202 +100,254 @@ export class PerformanceShowcaseComponent implements OnInit, OnDestroy {
       index: 1,
       titleKey: 'sections.getterVsSignal.title',
       subtitleKey: 'sections.getterVsSignal.navSubtitle',
+      category: 'Computed',
     },
     {
       id: 'lazy-loading',
       index: 2,
       titleKey: 'sections.lazyLoading.title',
       subtitleKey: 'sections.lazyLoading.navSubtitle',
+      category: 'Bundle size',
     },
     {
       id: 'signal-readonly',
       index: 3,
       titleKey: 'sections.signalReadonly.title',
       subtitleKey: 'sections.signalReadonly.navSubtitle',
+      category: 'Encapsulation',
     },
     {
       id: 'service-scope',
       index: 4,
       titleKey: 'sections.serviceScope.title',
       subtitleKey: 'sections.serviceScope.navSubtitle',
+      category: 'DI',
     },
     {
       id: 'debounce',
       index: 5,
       titleKey: 'sections.inputDebounce.title',
       subtitleKey: 'sections.inputDebounce.navSubtitle',
+      category: 'RxJS',
     },
     {
       id: 'track-for',
       index: 6,
       titleKey: 'sections.trackFor.title',
       subtitleKey: 'sections.trackFor.navSubtitle',
+      category: 'Performance',
     },
     {
       id: 'unsubscribe',
       index: 7,
       titleKey: 'sections.observableCleanup.title',
       subtitleKey: 'sections.observableCleanup.navSubtitle',
+      category: 'RxJS',
     },
     {
       id: 'shared-module',
       index: 8,
       titleKey: 'sections.sharedModulePattern.title',
       subtitleKey: 'sections.sharedModulePattern.navSubtitle',
+      category: 'Architecture',
     },
     {
       id: 'defer-blocks',
       index: 9,
       titleKey: 'sections.deferBlocks.title',
       subtitleKey: 'sections.deferBlocks.navSubtitle',
+      category: 'Angular 17+',
     },
     {
       id: 'on-push',
       index: 10,
       titleKey: 'sections.onPush.title',
       subtitleKey: 'sections.onPush.navSubtitle',
+      category: 'Performance',
     },
     {
       id: 'forms',
       index: 11,
       titleKey: 'sections.formsStrategy.title',
       subtitleKey: 'sections.formsStrategy.navSubtitle',
+      category: 'Bonus',
     },
     {
       id: 'ng-optimized-image',
       index: 12,
       titleKey: 'sections.ngOptimizedImage.title',
       subtitleKey: 'sections.ngOptimizedImage.navSubtitle',
+      category: 'Performance',
     },
     {
       id: 'virtual-scroll',
       index: 13,
       titleKey: 'sections.virtualScroll.title',
       subtitleKey: 'sections.virtualScroll.navSubtitle',
+      category: 'Performance',
     },
     {
       id: 'pure-pipe',
       index: 14,
       titleKey: 'sections.purePipe.title',
       subtitleKey: 'sections.purePipe.navSubtitle',
+      category: 'Performance',
     },
     {
       id: 'to-signal',
       index: 15,
       titleKey: 'sections.toSignal.title',
       subtitleKey: 'sections.toSignal.navSubtitle',
+      category: 'Signals',
     },
     {
       id: 'effect-vs-computed',
       index: 16,
       titleKey: 'sections.effectVsComputed.title',
       subtitleKey: 'sections.effectVsComputed.navSubtitle',
+      category: 'Signals',
     },
     {
       id: 'linked-signal',
       index: 17,
       titleKey: 'sections.linkedSignal.title',
       subtitleKey: 'sections.linkedSignal.navSubtitle',
+      category: 'Signals',
     },
     {
       id: 'signal-input',
       index: 18,
       titleKey: 'sections.signalInput.title',
       subtitleKey: 'sections.signalInput.navSubtitle',
+      category: 'Signals',
     },
     {
       id: 'facade-pattern',
       index: 19,
       titleKey: 'sections.facadePattern.title',
       subtitleKey: 'sections.facadePattern.navSubtitle',
+      category: 'Architecture',
     },
     {
       id: 'smart-dumb',
       index: 20,
       titleKey: 'sections.smartDumb.title',
       subtitleKey: 'sections.smartDumb.navSubtitle',
+      category: 'Architecture',
     },
     {
       id: 'injection-token',
       index: 21,
       titleKey: 'sections.injectionToken.title',
       subtitleKey: 'sections.injectionToken.navSubtitle',
+      category: 'Architecture',
     },
     {
       id: 'folder-structure',
       index: 22,
       titleKey: 'sections.folderStructure.title',
       subtitleKey: 'sections.folderStructure.navSubtitle',
+      category: 'Architecture',
     },
     {
       id: 'bypass-security',
       index: 23,
       titleKey: 'sections.bypassSecurity.title',
       subtitleKey: 'sections.bypassSecurity.navSubtitle',
+      category: 'Security',
     },
     {
       id: 'http-only-cookie',
       index: 24,
       titleKey: 'sections.httpOnlyCookie.title',
       subtitleKey: 'sections.httpOnlyCookie.navSubtitle',
+      category: 'Security',
     },
     {
       id: 'http-client-generics',
       index: 25,
       titleKey: 'sections.httpClientGenerics.title',
       subtitleKey: 'sections.httpClientGenerics.navSubtitle',
+      category: 'TypeScript',
     },
     {
       id: 'output-fn',
       index: 26,
       titleKey: 'sections.outputFn.title',
       subtitleKey: 'sections.outputFn.navSubtitle',
+      category: 'TypeScript',
     },
     {
       id: 'type-guard',
       index: 27,
       titleKey: 'sections.typeGuard.title',
       subtitleKey: 'sections.typeGuard.navSubtitle',
+      category: 'TypeScript',
     },
     {
       id: 'inject-fn',
       index: 28,
       titleKey: 'sections.injectFn.title',
       subtitleKey: 'sections.injectFn.navSubtitle',
+      category: 'DX',
     },
     {
       id: 'route-input-binding',
       index: 29,
       titleKey: 'sections.routeInputBinding.title',
       subtitleKey: 'sections.routeInputBinding.navSubtitle',
+      category: 'DX',
     },
     {
       id: 'bootstrap-app',
       index: 30,
       titleKey: 'sections.bootstrapApp.title',
       subtitleKey: 'sections.bootstrapApp.navSubtitle',
+      category: 'DX',
     },
     {
       id: 'rxjs-flattening',
       index: 31,
       titleKey: 'sections.rxjsFlattening.title',
       subtitleKey: 'sections.rxjsFlattening.navSubtitle',
+      category: 'RxJS',
     },
     {
       id: 'combine-latest',
       index: 32,
       titleKey: 'sections.combineLatest.title',
       subtitleKey: 'sections.combineLatest.navSubtitle',
+      category: 'RxJS',
     },
     {
       id: 'higher-order-rxjs',
       index: 33,
       titleKey: 'sections.higherOrderRxjs.title',
       subtitleKey: 'sections.higherOrderRxjs.navSubtitle',
+      category: 'RxJS',
     },
   ];
 
   protected readonly activeSection = signal('getter-vs-signal');
+
+  readonly categories = [...new Set(this.sections.map((s) => s.category))];
+
+  protected readonly selectedCategory = signal<string | null>(null);
+
+  protected readonly filteredSections = computed(() => {
+    const cat = this.selectedCategory();
+    return cat ? this.sections.filter((s) => s.category === cat) : this.sections;
+  });
+
+  protected readonly visibleIds = computed(() => new Set(this.filteredSections().map((s) => s.id)));
+
+  protected isSectionVisible(id: string): boolean {
+    return this.visibleIds().has(id);
+  }
+
+  protected selectCategory(category: string | null): void {
+    this.selectedCategory.set(category);
+  }
 
   protected scrollToSection(id: string): void {
     this.activeSection.set(id);
